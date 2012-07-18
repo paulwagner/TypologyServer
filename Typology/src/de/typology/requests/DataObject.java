@@ -39,6 +39,10 @@ public class DataObject {
     	this(result, primitive, uid, SC_SUCC, "");
     }
 
+    public DataObject(HashMap<Integer, String> result, boolean primitive) {
+    	this(result, primitive, "", SC_SUCC, "");
+    }
+    
     @Override
     public String toString() {
         if (result == null) {

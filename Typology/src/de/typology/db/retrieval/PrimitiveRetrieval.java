@@ -18,6 +18,7 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 	// PROPERTIES
 	
 	public Request requestObj;
+	private boolean interrupted = false;
 	
 	private String word;
 	private final int lang;
@@ -51,7 +52,6 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 	 */
 	@Override
 	public void eval() {
-		//TODO Testen
 		PrimitiveLayer db = (PrimitiveLayer) ThreadContext.getPrimitiveLayer(this.lang);
 		HashMap<Integer, String> map = db.getNodeMap();
 		
@@ -59,7 +59,7 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 		int c = 0;
 		resultMap.clear();
 		for(String s : map.values()){
-			if(c >= ConfigHelper.getRESULT_SIZE()){
+			if(isInterrupted() || c >= ConfigHelper.getRESULT_SIZE()){
 				break;
 			}
 			if(s.startsWith(word)){
@@ -71,7 +71,9 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 
 	@Override
 	public void doResponse() {
-		requestObj.makeResponse(resultMap, true);
+		if(!isInterrupted()){
+			requestObj.makeResponse(resultMap, true);
+		}
 		
 	}
 
@@ -88,6 +90,18 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 	public void run() {
 		eval();
 		doResponse();
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see de.typology.db.retrieval.IRetrieval#isInterrupted()
+	 */
+	public synchronized boolean isInterrupted(){
+		return this.interrupted;
+	}
+	
+	public synchronized void interrupt(){
+		this.interrupted = true;
 	}
 	
 	

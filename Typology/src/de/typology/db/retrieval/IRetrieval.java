@@ -37,22 +37,33 @@ public interface IRetrieval extends Runnable {
 	 * @see Request#makeResponse(java.util.HashMap)
 	 */
 	public void doResponse();
-	
+
 	/**
 	 * Method that sets the sentence for retrieval
 	 */
 	public void setSentence(String[] words, String offset);
-	
+
 	/**
 	 * Method for evaluating the retrieval
 	 */
 	public void eval();
-	
+
 	/**
-	 * Method for getting back the result as a Hashmap.
-	 * The Hashmap shouldn't contain Node objects because they should stay within the controlled retrieval class.
+	 * Method for getting back the result as a Hashmap. The Hashmap shouldn't
+	 * contain Node objects because they should stay within the controlled
+	 * retrieval class.
 	 */
 	public HashMap<Integer, String> getResult();
-	
+
+	/**
+	 * Methods to deal with interrupts. Actually it shouldn't be necessary to
+	 * set such a flag manually, but somehow I couldn't manage to get
+	 * Thread.interrupt() work.
+	 * TODO: Maybe someone could check this out.
+	 * 
+	 */
+	public boolean isInterrupted();
+
+	public void interrupt();
 
 }

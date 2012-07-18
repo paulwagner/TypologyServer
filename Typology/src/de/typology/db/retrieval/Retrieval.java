@@ -12,15 +12,17 @@ import java.util.HashMap;
 
 public class Retrieval implements IRetrieval {
 
+	private boolean interrupted = false;
+
 	@Override
 	public void doResponse() {
-		// TODO implementieren
+		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void setSentence(String[] words, String offset) {
-		// TODO implementieren
+		// TODO Auto-generated method stub
 
 	}
 
@@ -40,6 +42,16 @@ public class Retrieval implements IRetrieval {
 	public void run() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isInterrupted() {
+		return this.interrupted;
+	}
+
+	@Override
+	public void interrupt() {
+		this.interrupted = true;
 	}
 
 }
