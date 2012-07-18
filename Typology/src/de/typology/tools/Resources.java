@@ -39,7 +39,7 @@ public final class Resources {
 	public static final int DEF_P3 = 2;
 	public static final int DEF_P4 = 0;
 	public static final int DEF_RESULT_SIZE = 10;
-	public static final int DEF_RET_TIMEOUT = 5; // in seconds
+	public static final int DEF_RET_TIMEOUT = 10; // in seconds
 	// MAINTANENCE SETTINGS
 	// Generally turn on/off every append of outside data
 	public static final Boolean DEF_APPEND_NEW_DATA = true;

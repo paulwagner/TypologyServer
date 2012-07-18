@@ -42,7 +42,7 @@ public final class ConfigHelper {
 	private static int PROPERTYSTORE_MEM = DEF_PROPERTYSTORE_MEM;
 	private static String CACHE_TYPE = DEF_CACHE_TYPE;
 	private static String DB_PATH = DEF_DB_PATH;	
-	// MAINTANENCE SETTINGS
+	// MAINTENANCE SETTINGS
 	private static Boolean APPEND_NEW_DATA = DEF_APPEND_NEW_DATA;
 	private static Boolean NORM_AFTER_APPEND = DEF_NORM_AFTER_APPEND;
 	private static Boolean PERSONALIZE_DATABASE = DEF_PERSONALIZE_DATABASE;
