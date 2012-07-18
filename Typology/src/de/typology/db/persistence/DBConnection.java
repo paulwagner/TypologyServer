@@ -16,6 +16,7 @@ import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
+import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
 
@@ -60,7 +61,7 @@ public class DBConnection implements IDBConnection {
 		Map<String, String> config = new HashMap<String, String>();
 		config.put("cache_type", this.CACHE_TYPE);
 
-		IOHelper.log("(DBConn) New Connection");
+		IOHelper.log("(DBConn.init()) Create new connection with " + this.DB_PATH, ThreadContext.getServletContext());
 		this.graph = new EmbeddedGraphDatabase(this.DB_PATH, config);
 		registerShutdownHook(this.graph);
 		this.REF_NODE = this.graph.getReferenceNode();
@@ -119,6 +120,7 @@ public class DBConnection implements IDBConnection {
 	 */
 	@Override
 	public void closeConnection() {
+		IOHelper.log("(DBConn.closeConnection()) Shutdown requested for " + this.DB_PATH, ThreadContext.getServletContext());
 		if (this.graph != null) {
 			this.graph.shutdown();
 		}
@@ -139,6 +141,11 @@ public class DBConnection implements IDBConnection {
 	/**
 	 * Buffer database
 	 * 
+	 * @deprecated Don't use this method anymore, because it justs load all
+	 *             nodes and relationships to RAM. You should load everything
+	 *             you need in your DBLayer corresponding to your Retrieval
+	 * 
+	 * @see de.typology.db.layer.IDBLayer#loadLayer()
 	 */
 	protected void bufferDatabase() {
 		IOHelper.log("(DBConn) Start buffering database");

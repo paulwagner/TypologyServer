@@ -54,7 +54,7 @@ public class DBLayer implements IDBLayer {
 	@Override
 	public void loadLayer() {
 		if(!db.isShutdown()){
-			// TODO implementieren
+			// implement DBLayer
 		}
 	}
 

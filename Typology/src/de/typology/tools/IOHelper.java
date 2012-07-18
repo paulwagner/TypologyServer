@@ -166,9 +166,8 @@ public class IOHelper {
 	public static void log(String out, ServletContext context) {
 		if (context != null) {
 			context.log(out);
-		} else {
-			log(out);
 		}
+		log(out);
 	}
 
 	/**
