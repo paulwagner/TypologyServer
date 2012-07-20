@@ -9,6 +9,16 @@ package de.typology.tools;
 public final class Resources {
 
 	/**
+	 * VERSION NUMBERS
+	 */
+	public static final Double VERSION_NUMBER = 1.1;
+	public static final String VERSION_STRING = "1.1";
+	public static final Double CLIENT_SUPPORTED_NUMBER = 0.3;
+	public static final String CLIENT_SUPPORTED_STRING = "0.3";
+	public static final Double CLIENT_MINIMUM_NUMBER = 0.3;
+	public static final String CLIENT_MINIMUM_STRING = "0.3";
+	
+	/**
 	 * LANGUAGE FLAGS
 	 */
 	public static final int LN_DE = 0;
@@ -68,10 +78,12 @@ public final class Resources {
 	 */
 	public static final int SC_ERR  = -1;
 	public static final int SC_SUCC = 0;
-	public static final int SC_RET_INTERRUPTED = 1;
-	public static final int SC_RET_TIMEOUT = 2;
-	public static final int SC_NO_SESSION = 3;
+
+	public static final int SC_WRN_RET_INTERRUPTED = 1;
+	public static final int SC_WRN_RET_TIMEOUT = 2;
 	
-
-
+	public static final int SC_ERR_NO_SESSION = 3;
+	public static final int SC_ERR_TOO_OLD_VERSION = 4;
+	public static final int SC_ERR_TOO_NEW_VERSION = 5;
+	
 }

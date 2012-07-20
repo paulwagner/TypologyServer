@@ -70,7 +70,7 @@ public class ServletDE extends HttpServlet {
 
 	/**
 	 * Handle new request (POST):
-	 * Instanciate new Request and put it into thread pool.
+	 * Instanciate new Request and execute it.
 	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)

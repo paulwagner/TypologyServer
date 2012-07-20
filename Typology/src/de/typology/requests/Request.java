@@ -77,7 +77,7 @@ public class Request {
 		// want to do anything
 		this.session = this.requestObj.getSession(false);
 		if ((this.session == null && this.function != FN_INITIATESESSION)) {
-			makeErrorResponse(SC_NO_SESSION,
+			makeErrorResponse(SC_ERR_NO_SESSION,
 					"You need to create a session first using method initiateSession()");
 			return;
 		} else {
@@ -254,14 +254,14 @@ public class Request {
 					+ ")) Retrieval has been interrupted (sid: " + this.sid
 					+ ")";
 			IOHelper.logError(msg, ThreadContext.getServletContext());
-			makeErrorResponse(SC_RET_INTERRUPTED, "");
+			makeErrorResponse(SC_WRN_RET_INTERRUPTED, "");
 		}
 		if (t.isAlive()) {
 			ret.interrupt();
 			String msg = "WARNING: (Request.execute(" + this.function
 					+ ")) Retrieval has been timeouted (sid: " + this.sid + ")";
 			IOHelper.logError(msg, ThreadContext.getServletContext());
-			makeErrorResponse(SC_RET_TIMEOUT, "");
+			makeErrorResponse(SC_WRN_RET_TIMEOUT, "");
 		}
 	}
 
