@@ -14,6 +14,20 @@ public final class Resources {
 	public static final int LN_DE = 0;
 	public static final int LN_EN = 1;
 	public static final int LN_MAX = 1;
+	
+	/**
+	 * FUNCTION FLAGS
+	 */
+	public static final int FN_INITIATESESSION = 0;
+	public static final int FN_GETQUERY = 1;
+	public static final int FN_GETRESULT = 2;
+	public static final int FN_GETPRIMITIVE = 3;
+	public static final int FN_GETMORE = 4;
+	public static final int FN_ENDSESSION = 5;
+	public static final int FN_STORETEXT = 6;
+	public static final int FN_STOREMETRICS = 7;
+	public static final int FN_GETMETRICS = 8;
+	
 
 	/**
 	 * SERVLET CONTEXT FLAGS
@@ -26,7 +40,6 @@ public final class Resources {
 	public static final String DEF_NAME_KEY = "word";
 	public static final String DEF_COUNT_KEY = "cnt";
 	public static final String DEF_REL_KEY = "rel_loc";
-	public static final String DEF_UID_KEY = "uid";
 	public static final String DEF_DATE_KEY = "date";
 	public static final int DEF_MAX_RELATIONS = 4;
 	public static final int DEF_RELATIONSHIPSTORE_MEM = 100;
@@ -39,6 +52,7 @@ public final class Resources {
 	public static final int DEF_P3 = 2;
 	public static final int DEF_P4 = 0;
 	public static final int DEF_RESULT_SIZE = 10;
+	public static final int DEF_RETRIEVAL_SIZE = 50;
 	public static final int DEF_RET_TIMEOUT = 10; // in seconds
 	// MAINTANENCE SETTINGS
 	// Generally turn on/off every append of outside data
@@ -56,8 +70,8 @@ public final class Resources {
 	public static final int SC_SUCC = 0;
 	public static final int SC_RET_INTERRUPTED = 1;
 	public static final int SC_RET_TIMEOUT = 2;
+	public static final int SC_NO_SESSION = 3;
 	
-	public static final int CS_TYPE_DEV = 0;
-	public static final int CS_TYPE_SESSION = 1;
+
 
 }
