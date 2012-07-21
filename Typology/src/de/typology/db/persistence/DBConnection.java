@@ -16,7 +16,6 @@ import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.IndexManager;
 import org.neo4j.kernel.EmbeddedGraphDatabase;
 
-import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
 
@@ -61,7 +60,7 @@ public class DBConnection implements IDBConnection {
 		Map<String, String> config = new HashMap<String, String>();
 		config.put("cache_type", this.CACHE_TYPE);
 
-		IOHelper.log("(DBConn.init()) Create new connection with " + this.DB_PATH, ThreadContext.getServletContext());
+		IOHelper.logContext("(DBConn.init()) Create new connection with " + this.DB_PATH);
 		this.graph = new EmbeddedGraphDatabase(this.DB_PATH, config);
 		registerShutdownHook(this.graph);
 		this.REF_NODE = this.graph.getReferenceNode();
@@ -120,7 +119,7 @@ public class DBConnection implements IDBConnection {
 	 */
 	@Override
 	public void closeConnection() {
-		IOHelper.log("(DBConn.closeConnection()) Shutdown requested for " + this.DB_PATH, ThreadContext.getServletContext());
+		IOHelper.logContext("(DBConn.closeConnection()) Shutdown requested for " + this.DB_PATH);
 		if (this.graph != null) {
 			this.graph.shutdown();
 		}

@@ -215,7 +215,7 @@ public class Request {
 			out.flush();
 			out.close();
 		} catch (IOException e) {
-			IOHelper.logErrorException(e, ThreadContext.getServletContext());
+			IOHelper.logErrorExceptionContext(e);
 		}
 	}
 
@@ -253,14 +253,14 @@ public class Request {
 			String msg = "WARNING: (Request.execute(" + this.function
 					+ ")) Retrieval has been interrupted (sid: " + this.sid
 					+ ")";
-			IOHelper.logError(msg, ThreadContext.getServletContext());
+			IOHelper.logErrorContext(msg);
 			makeErrorResponse(SC_WRN_RET_INTERRUPTED, "");
 		}
 		if (t.isAlive()) {
 			ret.interrupt();
 			String msg = "WARNING: (Request.execute(" + this.function
 					+ ")) Retrieval has been timeouted (sid: " + this.sid + ")";
-			IOHelper.logError(msg, ThreadContext.getServletContext());
+			IOHelper.logErrorContext(msg);
 			makeErrorResponse(SC_WRN_RET_TIMEOUT, "");
 		}
 	}

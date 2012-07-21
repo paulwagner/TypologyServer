@@ -64,7 +64,7 @@ public class ServletDE extends HttpServlet {
 			ThreadContext.setDBLayer(new DBLayer(db), LN_DE);
 			ThreadContext.setPrimitiveLayer(new PrimitiveLayer(db), LN_DE);
 		} catch (Exception e) {
-			IOHelper.logErrorException(e, sc);
+			IOHelper.logErrorExceptionContext(e);
 		}
 	}
 
@@ -79,10 +79,10 @@ public class ServletDE extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		
 		ServletContext sc = getServletContext();
-		IOHelper.log("(ServletDE.doPost()) New german request", sc);
+		IOHelper.logContext("(ServletDE.doPost()) New german request");
 		Request r = new Request(LN_DE, request, response);
 		r.execute();
-		IOHelper.log("(ServletDE.doPost()) Finished german request", sc);
+		IOHelper.logContext("(ServletDE.doPost()) Finished german request");
 	}	
 
 }

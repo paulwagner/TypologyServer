@@ -30,12 +30,12 @@ public class AppListener implements ServletContextListener {
 		ServletContext sc = arg0.getServletContext();
 		String s = null;
 		if (sc != null) {
-			IOHelper.log("(AppListener.contextInitialized()) Initializing Application...", sc);
+			ThreadContext.setServletContext(sc);
+			IOHelper.logContext("(AppListener.contextInitialized()) Initializing Application...");
 			s = sc.getInitParameter("configfile");
 			if (s != null && !s.isEmpty()) {
 				ConfigHelper.loadConfigFile(s);
 			}
-			ThreadContext.setServletContext(sc);
 		} else {
 			IOHelper.logError("(AppListener.contextInitialized) ServletContext couldn't be loaded. Unable to start up...");
 			throw new NullPointerException("Unable to load ServletContext");
@@ -48,8 +48,8 @@ public class AppListener implements ServletContextListener {
 	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
 	 */
 	public void contextDestroyed(ServletContextEvent arg0) {
-		ServletContext sc = arg0.getServletContext();
-		IOHelper.log("(AppListener.contextDestroyed()) Shutdown Application...", sc);
+		//ServletContext sc = arg0.getServletContext();
+		IOHelper.logContext("(AppListener.contextDestroyed()) Shutdown Application...");
 		for (int i = 0; i <= LN_MAX; i++) {
 			IDBConnection db = ThreadContext.getDB(i);
 			if(db != null){

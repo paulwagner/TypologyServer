@@ -19,6 +19,8 @@ import java.util.Date;
 
 import javax.servlet.ServletContext;
 
+import de.typology.threads.ThreadContext;
+
 public class IOHelper {
 	private static BufferedWriter logFile = openAppendFile(System
 			.getProperty("catalina.base")
@@ -160,10 +162,9 @@ public class IOHelper {
 	 * 
 	 * @param out
 	 *            String to log in context
-	 * @param context
-	 *            ServletContext
 	 */
-	public static void log(String out, ServletContext context) {
+	public static void logContext(String out) {
+		ServletContext context = ThreadContext.getServletContext();
 		if (context != null) {
 			context.log(out);
 		}
@@ -177,10 +178,9 @@ public class IOHelper {
 	 * 
 	 * @param out
 	 *            Manual error message
-	 * @param context
-	 *            The servlet context
 	 */
-	public static void logError(String out, ServletContext context) {
+	public static void logErrorContext(String out) {
+		ServletContext context = ThreadContext.getServletContext();
 		if (context != null) {
 			context.log(out);
 		}
@@ -197,11 +197,9 @@ public class IOHelper {
 	 *            will be used
 	 * @param out
 	 *            Exception to log
-	 * @param context
-	 *            ServletContext
 	 */
-	public static void logErrorException(String myMsg, Throwable out,
-			ServletContext context) {
+	public static void logErrorExceptionContext(String myMsg, Throwable out) {
+		ServletContext context = ThreadContext.getServletContext();
 		if (myMsg.isEmpty()) {
 			myMsg = out.getMessage();
 		}
@@ -211,7 +209,7 @@ public class IOHelper {
 		logErrorException(myMsg, out);
 	}
 	
-	public static void logErrorException(Throwable out, ServletContext context){
-		logErrorException(out.getMessage(), out, context);
+	public static void logErrorExceptionContext(Throwable out){
+		logErrorExceptionContext(out.getMessage(), out);
 	}
 }
