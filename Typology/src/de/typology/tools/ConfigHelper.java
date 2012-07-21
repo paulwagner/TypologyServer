@@ -43,7 +43,7 @@ public final class ConfigHelper {
 	private static String DB_PATH = DEF_DB_PATH;
 	// MYSQL SETTINGS
 	private static String MYSQL_HOST = DEF_MYSQL_HOST;
-	private static String MYSQL_DB_LOG = DEF_MYSQL_DB_LOG;
+	private static String MYSQL_DB_MAIN = DEF_MYSQL_DB_MAIN;
 	private static String MYSQL_USER = DEF_MYSQL_USER;
 	private static String MYSQL_PASS = DEF_MYSQL_PASS;
 	// MAINTENANCE SETTINGS
@@ -251,8 +251,8 @@ public final class ConfigHelper {
 	/**
 	 * @return Mysql table for log
 	 */
-	public static final String getMYSQL_DB_LOG() {
-		return MYSQL_DB_LOG;
+	public static final String getMYSQL_DB_MAIN() {
+		return MYSQL_DB_MAIN;
 	}
 
 	/**

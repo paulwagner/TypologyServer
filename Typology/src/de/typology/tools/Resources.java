@@ -67,7 +67,7 @@ public final class Resources {
 	public static final String DEF_DB_PATH = "";
 	// MYSQL SETTINGS
 	public static final String DEF_MYSQL_HOST = "localhost";
-	public static final String DEF_MYSQL_DB_LOG = "typology";
+	public static final String DEF_MYSQL_DB_MAIN = "typology";
 	public static final String DEF_MYSQL_USER = "root";
 	public static final String DEF_MYSQL_PASS = "";
 	// MAINTANENCE SETTINGS

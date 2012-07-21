@@ -13,6 +13,17 @@
  */
 package de.typology.requests;
 
+import static de.typology.requests.RequestTools.fillResultSet;
+import static de.typology.requests.RequestTools.translateFunctionName;
+import static de.typology.tools.Resources.FN_GETPRIMITIVE;
+import static de.typology.tools.Resources.FN_GETQUERY;
+import static de.typology.tools.Resources.FN_GETRESULT;
+import static de.typology.tools.Resources.FN_INITIATESESSION;
+import static de.typology.tools.Resources.SC_ERR;
+import static de.typology.tools.Resources.SC_ERR_NO_SESSION;
+import static de.typology.tools.Resources.SC_WRN_RET_INTERRUPTED;
+import static de.typology.tools.Resources.SC_WRN_RET_TIMEOUT;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -27,12 +38,10 @@ import de.typology.db.retrieval.IRetrieval;
 import de.typology.db.retrieval.PrimitiveRetrieval;
 import de.typology.requests.interfaces.client.GetPrimitiveObjectClient;
 import de.typology.requests.interfaces.svr.DataObjectSvr;
+import de.typology.requests.interfaces.svr.GetPrimitiveObjectSvr;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
-
-import static de.typology.requests.RequestTools.*;
-import static de.typology.tools.Resources.*;
 
 public class Request {
 
@@ -43,8 +52,14 @@ public class Request {
 	private final HttpServletResponse responseObj;
 
 	public int function;
+	
 	public HttpSession session;
 	public String sid;
+	
+	// Primary keys of db tables are stored in session.
+	// Everything else gets queried on runtime
+	public String developer_key;
+	public int ulfnr = -1;
 
 	// private Gson jsonHandler = new Gson();
 	private Gson jsonHandler = ThreadContext.jsonHandler;
@@ -82,6 +97,11 @@ public class Request {
 			return;
 		} else {
 			this.sid = getSessionId();
+			if (!loadSession()){
+				makeErrorResponse(SC_ERR_NO_SESSION,
+						"Failed to load session necessary data from session. Perhaps you should create a new one...");
+				return;
+			}
 		}
 
 		// Hop into requested function
@@ -133,9 +153,15 @@ public class Request {
 	 * because the client needs to know when the session has been created.
 	 */
 	private void initiateSession() {
+		this.session = this.requestObj.getSession();
+		this.sid = getSessionId();
 
 		/**
 		 * TODO implement method
+		 * 
+		 * 1) check given developer key
+		 * 2) If uid given -> create or update given user
+		 * 3) create or update session in db with expiredate(confighelper value wich is also set in sessionheaders)
 		 * 
 		 * // Session handling: Create session if necessary and handle session
 		 * id // If we got a uid, its stored in the session, because we don't
@@ -192,8 +218,18 @@ public class Request {
 	 *            _Full_ result list
 	 */
 	public void doPrimitiveRetrievalCallback(HashMap<Integer, String> list) {
-		// TODO: store in session, fill dataobject and make response
-
+		HashMap<Integer, String> result = new HashMap<Integer, String>();
+		if(list.size() > ConfigHelper.getRESULT_SIZE()){
+			storeInSession("list.primitive", list);
+		} else {
+			storeInSession("list.primitive", null);
+		}		
+		fillResultSet(list, result, 0);
+		
+		GetPrimitiveObjectSvr data = new GetPrimitiveObjectSvr();
+		data.list = result;
+		data.totalcount = list.size();
+		makeResponse(data);
 	}
 
 	// RESPONSE
@@ -296,6 +332,27 @@ public class Request {
 		return null;
 	}
 
+	 /** Lookup an integer value stored in the current session.
+	  * If it wasn't successful (key not found or cast failure), the
+	  * default value will be returned
+	 * 
+	 * @param key
+	 *            Key for lookup
+	 * @return value for key or default
+	 */
+	private int getSessionValueAsInteger(String key, int _default) {
+		Object o = getSessionValue(key);
+		if(o == null){
+			return _default;
+		}
+		try{
+			int r = Integer.parseInt((String) o);
+			return r;
+		} catch (NumberFormatException e){
+			return _default;
+		}
+	}
+	
 	/**
 	 * Get id of current session
 	 * 
@@ -306,5 +363,22 @@ public class Request {
 			return this.session.getId();
 		}
 		return null;
+	}
+	
+	/**
+	 * Load values of session to class.
+	 * 
+	 * @return true if loaded data is sufficient for run
+	 */
+	private boolean loadSession(){
+		if(this.session != null){
+			this.sid = session.getId();
+			this.ulfnr = getSessionValueAsInteger("ulfnr", -1);
+			this.developer_key = (String) getSessionValue("developer_key");
+			if(this.developer_key == null){
+				return false;
+			}			
+		}
+		return false;
 	}
 }
