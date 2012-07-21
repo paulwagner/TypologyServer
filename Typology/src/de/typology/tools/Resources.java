@@ -51,19 +51,25 @@ public final class Resources {
 	public static final String DEF_COUNT_KEY = "cnt";
 	public static final String DEF_REL_KEY = "rel_loc";
 	public static final String DEF_DATE_KEY = "date";
-	public static final int DEF_MAX_RELATIONS = 4;
-	public static final int DEF_RELATIONSHIPSTORE_MEM = 100;
-	public static final int DEF_PROPERTYSTORE_MEM = 150;
-	public static final String DEF_CACHE_TYPE = "strong";
-	public static final String DEF_DB_PATH = "";
 	// RETRIEVAL CONFIG
 	public static final int DEF_P1 = 5;
 	public static final int DEF_P2 = 2;
 	public static final int DEF_P3 = 2;
 	public static final int DEF_P4 = 0;
+	public static final int DEF_MAX_RELATIONS = 4;
 	public static final int DEF_RESULT_SIZE = 10;
 	public static final int DEF_RETRIEVAL_SIZE = 50;
 	public static final int DEF_RET_TIMEOUT = 10; // in seconds
+	// NEO4J Settions
+	public static final int DEF_RELATIONSHIPSTORE_MEM = 100;
+	public static final int DEF_PROPERTYSTORE_MEM = 150;
+	public static final String DEF_CACHE_TYPE = "strong";
+	public static final String DEF_DB_PATH = "";
+	// MYSQL SETTINGS
+	public static final String DEF_MYSQL_HOST = "localhost";
+	public static final String DEF_MYSQL_DB_LOG = "typology";
+	public static final String DEF_MYSQL_USER = "root";
+	public static final String DEF_MYSQL_PASS = "";
 	// MAINTANENCE SETTINGS
 	// Generally turn on/off every append of outside data
 	public static final Boolean DEF_APPEND_NEW_DATA = true;

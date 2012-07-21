@@ -41,6 +41,11 @@ public final class ConfigHelper {
 	private static int PROPERTYSTORE_MEM = DEF_PROPERTYSTORE_MEM;
 	private static String CACHE_TYPE = DEF_CACHE_TYPE;
 	private static String DB_PATH = DEF_DB_PATH;
+	// MYSQL SETTINGS
+	private static String MYSQL_HOST = DEF_MYSQL_HOST;
+	private static String MYSQL_DB_LOG = DEF_MYSQL_DB_LOG;
+	private static String MYSQL_USER = DEF_MYSQL_USER;
+	private static String MYSQL_PASS = DEF_MYSQL_PASS;
 	// MAINTENANCE SETTINGS
 	private static Boolean APPEND_NEW_DATA = DEF_APPEND_NEW_DATA;
 	private static Boolean NORM_AFTER_APPEND = DEF_NORM_AFTER_APPEND;
@@ -234,6 +239,34 @@ public final class ConfigHelper {
 	 */
 	public static final String getDB_PATH() {
 		return DB_PATH;
+	}
+
+	/**
+	 * @return Mysql Host
+	 */
+	public static final String getMYSQL_HOST() {
+		return MYSQL_HOST;
+	}
+
+	/**
+	 * @return Mysql table for log
+	 */
+	public static final String getMYSQL_DB_LOG() {
+		return MYSQL_DB_LOG;
+	}
+
+	/**
+	 * @return Mysql user
+	 */
+	public static final String getMYSQL_USER() {
+		return MYSQL_USER;
+	}
+
+	/**
+	 * @return Mysql password
+	 */
+	public static final String getMYSQL_PASS() {
+		return MYSQL_PASS;
 	}
 
 	/**
