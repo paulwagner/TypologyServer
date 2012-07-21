@@ -60,7 +60,7 @@ public final class ConfigHelper {
 	 * 
 	 * @param config_file
 	 */
-	public static void loadConfigFile(String config_file) {
+	public static void loadConfigFile(String config_file) throws Exception {
 		if (!config_file.isEmpty() && !LOADED) {
 			try {
 				Properties p = new Properties();
@@ -118,8 +118,10 @@ public final class ConfigHelper {
 			} catch (Exception e) {
 				IOHelper.logError("(ConfigHelper) Error parsing config file...");
 			}
+		} else {
+			IOHelper.logErrorContext("WARNING: (ConfigHelper.loadConfigFile()) Specified config file is empty or config has already be loaded.");
+			throw new Exception();
 		}
-
 	}
 
 	/**

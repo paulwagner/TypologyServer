@@ -34,7 +34,11 @@ public class AppListener implements ServletContextListener {
 			IOHelper.logContext("(AppListener.contextInitialized()) Initializing Application...");
 			s = sc.getInitParameter("configfile");
 			if (s != null && !s.isEmpty()) {
-				ConfigHelper.loadConfigFile(s);
+				try {
+					ConfigHelper.loadConfigFile(s);
+				} catch (Exception e) {
+					IOHelper.logErrorContext("WARNING: (AppListener.init()) Unable to load configfile...");
+				}
 			}
 		} else {
 			IOHelper.logError("(AppListener.contextInitialized) ServletContext couldn't be loaded. Unable to start up...");

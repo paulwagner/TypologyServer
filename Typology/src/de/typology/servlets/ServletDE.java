@@ -20,7 +20,6 @@ import static de.typology.tools.Resources.LN_DE;
 import java.io.IOException;
 
 import javax.servlet.Servlet;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -56,9 +55,7 @@ public class ServletDE extends HttpServlet {
 	 */
 	public void init() throws ServletException {
 		// Load German Databases and Layers into ThreadContext
-		ServletContext sc = null;
 		try {
-			sc = getServletContext();
 			IDBConnection db = new DBConnection(); 
 			ThreadContext.setDB(db, LN_DE);
 			ThreadContext.setDBLayer(new DBLayer(db), LN_DE);
@@ -78,7 +75,6 @@ public class ServletDE extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		
-		ServletContext sc = getServletContext();
 		IOHelper.logContext("(ServletDE.doPost()) New german request");
 		Request r = new Request(LN_DE, request, response);
 		r.execute();
