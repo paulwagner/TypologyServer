@@ -30,15 +30,19 @@ public class SBVEntry implements Comparable<SBVEntry> {
 		}		
 		if(o.c.equals(Long.class)){
 			// compare obj to long
-			return ((Long) this.value).compareTo((Long) o.value);
+			return ((Long) o.value).compareTo((Long) this.value);
 		}		
 		if(o.c.equals(Double.class)){
 			// compare obj to double
-			return ((Double) this.value).compareTo((Double) o.value);
+			return ((Double) o.value).compareTo((Double) this.value);
 		}		
 		if(o.c.equals(Float.class)){
 			// compare obj to double
-			return ((Float) this.value).compareTo((Float) o.value);
+			return ((Float) o.value).compareTo((Float) this.value);
+		}		
+		if(o.c.equals(String.class)){
+			// compare obj to double
+			return ((String) o.value).compareTo((String) this.value);
 		}		
 		return 0;
 	}	
