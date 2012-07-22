@@ -128,7 +128,7 @@ public class DBTools {
 						}
 					}
 					// Wenn i>1, Beziehung von i-s zu i mit typ s hinzufügen
-					if (i > 0) {
+					if (i >= s) {
 						String myrelMapKey = words[i - s] + ":" + words[i]
 								+ ":" + s;
 						Relationship rel = relMap.get(myrelMapKey);
@@ -146,7 +146,7 @@ public class DBTools {
 							relMap.put(myrelMapKey, rel);
 						}
 					}
-					i += s;
+					i += 1;
 				}
 			}
 		}
