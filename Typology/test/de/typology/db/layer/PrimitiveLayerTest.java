@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import de.typology.SetupHelperMethods;
 import de.typology.db.persistence.IDBConnection;
-import de.typology.db.persistence.impl.DBConnectionTestImpl;
+import de.typology.db.persistence.impl.ImpermanentDBConnection;
 
 public class PrimitiveLayerTest {
 
@@ -34,8 +34,8 @@ public class PrimitiveLayerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		SetupHelperMethods.initiateLogSupport();
-		db = new DBConnectionTestImpl();
-		((DBConnectionTestImpl) db).fillWithText("Das sind zwei Worte. Das ist ein Wort. Das sollte am häufigsten sein. sind zwei Worte. ist ein Wort. sollte nicht am häufigsten sein. allein ist nur nur nicht.");
+		db = new ImpermanentDBConnection();
+		((ImpermanentDBConnection) db).fillWithText("Das sind zwei Worte. Das ist ein Wort. Das sollte am häufigsten sein. sind zwei Worte. ist ein Wort. sollte nicht am häufigsten sein. allein ist nur nur nicht.");
 		layer = new PrimitiveLayer(db);
 	}
 

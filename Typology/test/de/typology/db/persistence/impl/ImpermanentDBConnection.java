@@ -1,9 +1,6 @@
 /**
- * Test database connection implementation.
- * Of course this class is not for testing dbconnection class, but you can use it as input for other classes to test.
- * This class will simulate a little test graph with specified data, so it may be interesting also for other purposes...
- * 
- * Other than real db connection classes, you have to call setText() and createDatabase() to instantiate a db.
+ * Impermanent database connection implementation.
+ * This class will simulate a little test graph with specified data, wich may be interesting also for many purposes...
  * 
  * @author Paul Wagner
  */
@@ -26,7 +23,7 @@ import de.typology.db.persistence.IDBConnection;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
 
-public class DBConnectionTestImpl implements IDBConnection {
+public class ImpermanentDBConnection implements IDBConnection {
 
 	// PROPERTIES
 
@@ -49,7 +46,7 @@ public class DBConnectionTestImpl implements IDBConnection {
 	 * 
 	 * @throws Exception
 	 */
-	public DBConnectionTestImpl() throws Exception {
+	public ImpermanentDBConnection() throws Exception {
 		this(ConfigHelper.getMAX_RELATIONS(), ConfigHelper.getNAME_KEY(),
 				ConfigHelper.getCACHE_TYPE());
 	}
@@ -66,7 +63,7 @@ public class DBConnectionTestImpl implements IDBConnection {
 	 * @throws Exception
 	 *             config
 	 */
-	public DBConnectionTestImpl(int max_relations, String index_key,
+	public ImpermanentDBConnection(int max_relations, String index_key,
 			String cache_type) throws Exception {
 		createDatabase(max_relations, index_key, cache_type);
 	}
