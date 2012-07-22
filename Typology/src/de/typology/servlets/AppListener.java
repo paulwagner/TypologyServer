@@ -26,6 +26,8 @@ public class AppListener implements ServletContextListener {
 	 * @see ServletContextListener#contextInitialized(ServletContextEvent)
 	 */
 	public void contextInitialized(ServletContextEvent arg0) {
+		// Initialize log
+		IOHelper.initializeTomcatLog();
 		// Load config file
 		ServletContext sc = arg0.getServletContext();
 		String s = null;

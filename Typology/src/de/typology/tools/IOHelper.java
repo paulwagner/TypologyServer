@@ -22,16 +22,28 @@ import javax.servlet.ServletContext;
 import de.typology.threads.ThreadContext;
 
 public class IOHelper {
-	private static BufferedWriter logFile = openAppendFile(System
-			.getProperty("catalina.base")
-			+ System.getProperty("file.separator")
-			+ "logs"
-			+ System.getProperty("file.separator") + "logfile.log");
-	private static BufferedWriter errorLogFile = openAppendFile(System
-			.getProperty("catalina.base")
-			+ System.getProperty("file.separator")
-			+ "logs"
-			+ System.getProperty("file.separator") + "error.log");
+	private static BufferedWriter logFile = null;
+	private static BufferedWriter errorLogFile = null;
+
+	/**
+	 * method that initializes logfile in tomcat directory
+	 */
+	public static void initializeTomcatLog() {
+		initializeLog(System.getProperty("catalina.base")
+				+ System.getProperty("file.separator") + "logs"
+				+ System.getProperty("file.separator"));
+	}
+
+	/**
+	 * method that initializes logfiles in specified path.
+	 * 
+	 * @param path
+	 *            to create log file in with trailing (back)slash!
+	 */
+	public static void initializeLog(String path) {
+		logFile = openAppendFile(path + "logfile.log");
+		errorLogFile = openAppendFile(path + "error.log");
+	}
 
 	/**
 	 * faster access to a buffered reader
@@ -106,7 +118,8 @@ public class IOHelper {
 	 * function for logging an error to error log (and also to standard log with
 	 * special marking).
 	 * 
-	 * @param out Manual error message
+	 * @param out
+	 *            Manual error message
 	 */
 	public static void logError(String out) {
 		log("!!!!!" + out);
@@ -118,17 +131,19 @@ public class IOHelper {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * function for logging an exception to error log (and also to standard log with
-	 * special marking).
+	 * function for logging an exception to error log (and also to standard log
+	 * with special marking).
 	 * 
-	 * @param myMsg Manual error message.
-	 * @param out Exception to log
+	 * @param myMsg
+	 *            Manual error message.
+	 * @param out
+	 *            Exception to log
 	 */
 	public static void logErrorException(String myMsg, Throwable out) {
 		String s;
-		if(myMsg.isEmpty()){
+		if (myMsg.isEmpty()) {
 			myMsg = ((Throwable) out).getMessage();
 		}
 		s = "EXCEPTION OCCURED: " + myMsg + "\n";
@@ -141,9 +156,9 @@ public class IOHelper {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}	
-	
-	public static void logErrorException(Throwable out){
+	}
+
+	public static void logErrorException(Throwable out) {
 		logErrorException(out.getMessage(), out);
 	}
 
@@ -193,8 +208,7 @@ public class IOHelper {
 	 * or server (so you have it together with all tomcat messages).
 	 * 
 	 * @param myMsg
-	 *            Manual error message.
-	 *            will be used
+	 *            Manual error message. will be used
 	 * @param out
 	 *            Exception to log
 	 */
@@ -208,8 +222,8 @@ public class IOHelper {
 		}
 		logErrorException(myMsg, out);
 	}
-	
-	public static void logErrorExceptionContext(Throwable out){
+
+	public static void logErrorExceptionContext(Throwable out) {
 		logErrorExceptionContext(out.getMessage(), out);
 	}
 }
