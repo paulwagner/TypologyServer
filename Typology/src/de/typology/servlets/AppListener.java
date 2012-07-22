@@ -59,7 +59,7 @@ public class AppListener implements ServletContextListener {
 		for (int i = 0; i <= LN_MAX; i++) {
 			IDBConnection db = ThreadContext.getDB(i);
 			if(db != null){
-				db.closeConnection();
+				db.shutdown();
 			}
 		}
 	}

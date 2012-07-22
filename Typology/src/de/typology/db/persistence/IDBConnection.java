@@ -18,15 +18,17 @@ public interface IDBConnection {
 	// GETTER
 	public abstract String getDB_PATH();
 
-	// METHODS
-	public abstract void closeConnection();
-		
 	public abstract Boolean isShutdown();
-	
+
 	public abstract EmbeddedGraphDatabase getGraph();
 	
 	public abstract DynamicRelationshipType[] getDn();
 	
 	public abstract Index<Node> getWordIndex();
+	
+	public abstract boolean isReferenceNode(Node n);
+
+	// METHODS
+	public abstract void shutdown();
 
 }

@@ -1,16 +1,17 @@
 /**
  * Test case for class ConfigHelper
+ * 
+ * @author Paul Wagner
  */
 package de.typology.tools;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedWriter;
 import java.io.File;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -18,6 +19,8 @@ public class ConfigHelperTest {
 
 	public static String filename = System.getProperty("java.io.tmpdir")
 			+ System.getProperty("file.separator") + "sampleconfig.ini";
+
+	// SETUP
 
 	/**
 	 * @throws java.lang.Exception
@@ -46,14 +49,16 @@ public class ConfigHelperTest {
 		}
 	}
 
+	// TESTS
+
 	/**
 	 * Test method for
 	 * {@link de.typology.tools.ConfigHelper#loadConfigFile(java.lang.String)}.
 	 */
 	@Test
 	public void loadConfigFile_loadNameKey_word() {
-		assertEquals("Check equality NAME_KEY", ConfigHelper.getNAME_KEY(),
-				"word");
+		assertEquals("Check equality NAME_KEY", "word",
+				ConfigHelper.getNAME_KEY());
 	}
 
 	/**
@@ -62,8 +67,8 @@ public class ConfigHelperTest {
 	 */
 	@Test
 	public void loadConfigFile_loadResultSize_20() {
-		assertEquals("Check equality RESULT_SIZE",
-				ConfigHelper.getRESULT_SIZE(), 20);
+		assertEquals("Check equality RESULT_SIZE", 20,
+				ConfigHelper.getRESULT_SIZE());
 	}
 
 	/**
@@ -72,8 +77,8 @@ public class ConfigHelperTest {
 	 */
 	@Test
 	public void loadConfigFile_loadDbPath_path() {
-		assertEquals("Check equality DB_PATH", ConfigHelper.getDB_PATH(),
-				"/usr/local/notexisting.db");
+		assertEquals("Check equality DB_PATH", "/usr/local/notexisting.db",
+				ConfigHelper.getDB_PATH());
 	}
 
 	/**

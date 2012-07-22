@@ -57,10 +57,11 @@ public class DBConnection implements IDBConnection {
 		this.MAX_RELATIONS = max_relations;
 		this.CACHE_TYPE = cache_type;
 
-		IOHelper.logContext("(DBConn.init()) Create new connection with " + this.DB_PATH);
+		IOHelper.logContext("(DBConn.init()) Create new connection with "
+				+ this.DB_PATH);
 		Map<String, String> config = new HashMap<String, String>();
 		config.put("cache_type", this.CACHE_TYPE);
-		if(ConfigHelper.getALLOW_UPGRADE()){
+		if (ConfigHelper.getALLOW_UPGRADE()) {
 			config.put("allow_store_upgrade", "true");
 			IOHelper.logContext("WARNING: (DBConn.init()) Upgrade flag is set. If you don't want to upgrade neo4j and have no new libraries in classpath, remove it from config! ");
 			IOHelper.logContext("WARNING: (DBConn.init()) DB will be upgrading if necessary. Don't stop the server while upgrade in progress! This may take a while... ");
@@ -74,7 +75,8 @@ public class DBConnection implements IDBConnection {
 		for (int i = 1; i <= this.MAX_RELATIONS; i++) {
 			this.dn[i] = DynamicRelationshipType.withName("rel:" + i);
 		}
-		IOHelper.logContext("(DBConn.init()) Graph db is up and running version " + getNeo4JVersion());		
+		IOHelper.logContext("(DBConn.init()) Graph db is up and running version "
+				+ getNeo4JVersion());
 	}
 
 	// GETTER
@@ -89,49 +91,49 @@ public class DBConnection implements IDBConnection {
 	public Node getReferenceNode() {
 		return REF_NODE;
 	}
-	
-	public String getNeo4JVersion(){
-		if(this.graph != null){
+
+	public String getNeo4JVersion() {
+		if (this.graph != null) {
 			return this.graph.getKernelData().version().getVersion();
 		}
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.typology.db.persistence.IDBConnection#getDB_PATH()
-	 */
 	@Override
 	public String getDB_PATH() {
 		return DB_PATH;
 	}
 
+	@Override
 	public DynamicRelationshipType[] getDn() {
 		return dn;
 	}
 
+	@Override
 	public EmbeddedGraphDatabase getGraph() {
 		return graph;
 	}
 
+	@Override
 	public Index<Node> getWordIndex() {
 		return wordIndex;
 	}
 
+	@Override
 	public Boolean isShutdown() {
 		return (this.shutdown || this.graph == null);
 	}
 
 	// METHODS
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Close db connection
 	 * 
-	 * @see de.typology.db.persistence.IDBConnection#closeConnection()
+	 * @see de.typology.db.persistence.IDBConnection#shutdown()
 	 */
 	@Override
-	public void closeConnection() {
-		IOHelper.logContext("(DBConn.closeConnection()) Shutdown requested for " + this.DB_PATH);
+	public void shutdown() {
+		IOHelper.logContext("(DBConn.closeConnection()) Shutdown requested for "
+				+ this.DB_PATH);
 		if (this.graph != null) {
 			this.graph.shutdown();
 		}
@@ -179,15 +181,14 @@ public class DBConnection implements IDBConnection {
 	}
 
 	/**
-	 * Shutdown Hook
+	 * Registers a shutdown hook for the Neo4j instance so that it shuts down
+	 * nicely when the VM exits (even if you "Ctrl-C" the running example before
+	 * it's completed)
 	 * 
 	 * @param graphDb
 	 *            graph to register
 	 */
 	private static void registerShutdownHook(final EmbeddedGraphDatabase graphDb) {
-		// Registers a shutdown hook for the Neo4j instance so that it
-		// shuts down nicely when the VM exits (even if you "Ctrl-C" the
-		// running example before it's completed)
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
