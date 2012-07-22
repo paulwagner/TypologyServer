@@ -46,8 +46,26 @@ public class DBConnection implements IDBConnection {
 	}
 
 	/**
+	 * Constructor using ConfigHelper
+	 * 
+	 * @param database
+	 *            Path to database
+	 * @throws Exception
+	 */
+	public DBConnection(String database) throws Exception {
+		this(database, ConfigHelper.getMAX_RELATIONS(), ConfigHelper
+				.getNAME_KEY(), ConfigHelper.getCACHE_TYPE());
+	}
+
+	/**
 	 * Constructor using manual config values
 	 * 
+	 * @param database
+	 *            Path to database
+	 * @param max_relations
+	 *            Maximum number of relationshiptypes the db has
+	 * @param index_key
+	 *            Key of word index
 	 * @throws Exception
 	 */
 	public DBConnection(String database, int max_relations, String index_key,

@@ -34,7 +34,7 @@ public class ImpermanentDBConnectionTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		SetupHelperMethods.initiateLogSupport();
+		SetupHelperMethods.initiateContextSupport();
 		db = new ImpermanentDBConnection();
 		db.fillWithText("Ein Test mit mehreren Wörtern. Und mit einem anderen Satz, aber ohne Komma. Ein Test.");
 	}

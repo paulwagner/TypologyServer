@@ -33,7 +33,7 @@ public class PrimitiveLayerTest {
 	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
-		SetupHelperMethods.initiateLogSupport();
+		SetupHelperMethods.initiateContextSupport();
 		db = new ImpermanentDBConnection();
 		((ImpermanentDBConnection) db).fillWithText("Das sind zwei Worte. Das ist ein Wort. Das sollte am häufigsten sein. sind zwei Worte. ist ein Wort. sollte nicht am häufigsten sein. allein ist nur nur nicht.");
 		layer = new PrimitiveLayer(db);

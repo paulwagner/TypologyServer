@@ -25,7 +25,7 @@ public class DBTools {
 	/**
 	 * Append text data to db without changing weights.
 	 */
-	public static void appendTextWithoutNorm() {
+	public static void appendTextWithoutNorm() {		
 
 	}
 
