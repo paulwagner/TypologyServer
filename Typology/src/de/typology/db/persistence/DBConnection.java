@@ -57,10 +57,14 @@ public class DBConnection implements IDBConnection {
 		this.MAX_RELATIONS = max_relations;
 		this.CACHE_TYPE = cache_type;
 
+		IOHelper.logContext("(DBConn.init()) Create new connection with " + this.DB_PATH);
 		Map<String, String> config = new HashMap<String, String>();
 		config.put("cache_type", this.CACHE_TYPE);
-
-		IOHelper.logContext("(DBConn.init()) Create new connection with " + this.DB_PATH);
+		if(ConfigHelper.getALLOW_UPGRADE()){
+			config.put("allow_store_upgrade", "true");
+			IOHelper.logContext("WARNING: (DBConn.init()) Upgrade flag is set. If you don't want to upgrade neo4j and have no new libraries in classpath, remove it from config! ");
+			IOHelper.logContext("WARNING: (DBConn.init()) DB will be upgrading if necessary. Don't stop the server while upgrade in progress! This may take a while... ");
+		}
 		this.graph = new EmbeddedGraphDatabase(this.DB_PATH, config);
 		registerShutdownHook(this.graph);
 		this.REF_NODE = this.graph.getReferenceNode();
@@ -70,6 +74,7 @@ public class DBConnection implements IDBConnection {
 		for (int i = 1; i <= this.MAX_RELATIONS; i++) {
 			this.dn[i] = DynamicRelationshipType.withName("rel:" + i);
 		}
+		IOHelper.logContext("(DBConn.init()) Graph db is up and running version " + getNeo4JVersion());		
 	}
 
 	// GETTER
@@ -83,6 +88,13 @@ public class DBConnection implements IDBConnection {
 
 	public Node getReferenceNode() {
 		return REF_NODE;
+	}
+	
+	public String getNeo4JVersion(){
+		if(this.graph != null){
+			return this.graph.getKernelData().version().getVersion();
+		}
+		return null;
 	}
 
 	/*

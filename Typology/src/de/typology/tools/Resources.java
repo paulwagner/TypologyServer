@@ -64,6 +64,7 @@ public final class Resources {
 	public static final int DEF_RELATIONSHIPSTORE_MEM = 100;
 	public static final int DEF_PROPERTYSTORE_MEM = 150;
 	public static final String DEF_CACHE_TYPE = "strong";
+	public static final boolean DEF_ALLOW_UPGRADE = false;
 	public static final String DEF_DB_PATH = "";
 	// MYSQL SETTINGS
 	public static final String DEF_MYSQL_HOST = "localhost";

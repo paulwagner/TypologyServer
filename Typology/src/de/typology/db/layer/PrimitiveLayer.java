@@ -16,6 +16,7 @@ import org.neo4j.graphdb.Node;
 
 import de.typology.db.persistence.IDBConnection;
 import de.typology.tools.ConfigHelper;
+import de.typology.tools.IOHelper;
 import de.typology.tools.SBVEntry;
 
 public class PrimitiveLayer implements IDBLayer {
@@ -70,6 +71,7 @@ public class PrimitiveLayer implements IDBLayer {
 	@Override
 	public void loadLayer() {
 		if(!db.isShutdown()){
+			IOHelper.logContext("(PrimitiveLayer.loadLayer()) Loading primitive layer....");
 			// Get all nodes and fill them into a map, which is basically our layer
 			Vector<SBVEntry> set = new Vector<SBVEntry>();
 			Long refId = db.getGraph().getReferenceNode().getId();

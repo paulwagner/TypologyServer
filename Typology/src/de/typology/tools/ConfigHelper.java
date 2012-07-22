@@ -40,6 +40,7 @@ public final class ConfigHelper {
 	private static int RELATIONSHIPSTORE_MEM = DEF_RELATIONSHIPSTORE_MEM;
 	private static int PROPERTYSTORE_MEM = DEF_PROPERTYSTORE_MEM;
 	private static String CACHE_TYPE = DEF_CACHE_TYPE;
+	private static Boolean ALLOW_UPGRADE = DEF_ALLOW_UPGRADE;
 	private static String DB_PATH = DEF_DB_PATH;
 	// MYSQL SETTINGS
 	private static String MYSQL_HOST = DEF_MYSQL_HOST;
@@ -91,6 +92,18 @@ public final class ConfigHelper {
 				PROPERTYSTORE_MEM = Integer.parseInt(p.getProperty(
 						"PROPERTYSTORE_MEM", PROPERTYSTORE_MEM + ""));
 				CACHE_TYPE = p.getProperty("CACHE_TYPE", CACHE_TYPE);
+				if (p.getProperty("ALLOW_UPGRADE", ALLOW_UPGRADE.toString())
+						.toUpperCase().equals("TRUE")) {
+					ALLOW_UPGRADE = true;
+				} else {
+					ALLOW_UPGRADE = false;
+				}
+				
+				// MYSQL SETTINGS
+				MYSQL_HOST = p.getProperty("MYSQL_HOST", MYSQL_HOST);
+				MYSQL_DB_MAIN = p.getProperty("MYSQL_DB_MAIN", MYSQL_DB_MAIN);
+				MYSQL_USER = p.getProperty("MYSQL_USER", MYSQL_USER);
+				MYSQL_PASS = p.getProperty("MYSQL_PASS", MYSQL_PASS);
 
 				// MAINTANENCE SETTINGS
 				if (p.getProperty("APPEND_NEW_DATA", APPEND_NEW_DATA.toString())
@@ -116,7 +129,8 @@ public final class ConfigHelper {
 
 				LOADED = true;
 			} catch (Exception e) {
-				IOHelper.logError("(ConfigHelper) Error parsing config file...");
+				IOHelper.logErrorContext("ERROR: (ConfigHelper.loadConfigFile()) Error parsing config file.");
+				throw e;
 			}
 		} else {
 			IOHelper.logErrorContext("WARNING: (ConfigHelper.loadConfigFile()) Specified config file is empty or config has already be loaded.");
@@ -235,6 +249,13 @@ public final class ConfigHelper {
 	public static final String getCACHE_TYPE() {
 		return CACHE_TYPE;
 	}
+	
+	/**
+	 * @return the neo4j config value
+	 */
+	public static final boolean getALLOW_UPGRADE() {
+		return ALLOW_UPGRADE;
+	}	
 
 	/**
 	 * @return used db path

@@ -39,7 +39,7 @@ public class AppListener implements ServletContextListener {
 				try {
 					ConfigHelper.loadConfigFile(s);
 				} catch (Exception e) {
-					IOHelper.logErrorContext("WARNING: (AppListener.init()) Unable to load configfile...");
+					IOHelper.logErrorExceptionContext("WARNING: (AppListener.init()) Unable to load configfile...", e);
 				}
 			}
 		} else {
