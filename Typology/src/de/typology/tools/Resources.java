@@ -88,9 +88,9 @@ public final class Resources {
 
 	public static final int SC_WRN_RET_INTERRUPTED = 1;
 	public static final int SC_WRN_RET_TIMEOUT = 2;
+	public static final int SC_WRN_TOO_OLD_VERSION = 5;
 	
 	public static final int SC_ERR_NO_SESSION = 3;
 	public static final int SC_ERR_TOO_OLD_VERSION = 4;
-	public static final int SC_ERR_TOO_NEW_VERSION = 5;
 	
 }

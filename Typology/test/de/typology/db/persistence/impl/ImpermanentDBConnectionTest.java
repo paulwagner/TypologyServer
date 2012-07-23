@@ -1,5 +1,8 @@
 /**
  * Test case for class ImpermanentDBConnection.
+ *
+ * TODO think about test again. Dependency to DBTools is not nice... -> as test helper method
+ * TODO also test norming
  * 
  * @author Paul Wagner
  */
@@ -181,5 +184,5 @@ public class ImpermanentDBConnectionTest {
 
 		assertEquals("Check weight of outgoing 1 edges from 'Ein'", 2, c);
 	}
-	
+
 }

@@ -1,6 +1,9 @@
 /**
  * Test case for primitivelayer class
  * 
+ * TODO use a mock interface to get rid of an implemented dbconnection here if possible to make test independent.
+ * Otherwise for example, an error in DBTools.appendTextAndNorm() could cause this test to fail.
+ * 
  * @author Paul Wagner
  */
 package de.typology.db.layer;

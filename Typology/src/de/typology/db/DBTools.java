@@ -76,6 +76,7 @@ public class DBTools {
 	public static void appendTextAndNorm(String text, IDBConnection db,
 			ArrayList<String> sepr_sentence, ArrayList<String> sepr_word,
 			String dont_escape) {
+		// TODO do norm!
 		// Compile regex patterns
 		StringBuilder pattern_sentence = new StringBuilder();
 		for (int i = 0; i < sepr_sentence.size(); i++) {

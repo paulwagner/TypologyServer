@@ -1,5 +1,11 @@
 /**
+ * Test case for DBConnection. This test really creates a database on your drive,
+ * which is uncommon for a test, but the only thing we can test here.
  * 
+ * TODO think over test again. dependency to DBTools is not nice... -> as test helper method
+ * TODO also test norming
+ * 
+ * @author Paul Wagner
  */
 package de.typology.db.persistence;
 
@@ -23,10 +29,6 @@ import de.typology.SetupHelperMethods;
 import de.typology.db.DBTools;
 import de.typology.tools.ConfigHelper;
 
-/**
- * @author paul
- * 
- */
 public class DBConnectionTest {
 
 	public static DBConnection db;
