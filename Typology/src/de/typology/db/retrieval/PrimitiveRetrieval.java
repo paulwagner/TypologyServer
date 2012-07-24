@@ -9,7 +9,7 @@ package de.typology.db.retrieval;
 import java.util.HashMap;
 
 import de.typology.db.layer.PrimitiveLayer;
-import de.typology.requests.Request;
+import de.typology.requests.IRequest;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 
@@ -17,17 +17,18 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 
 	// PROPERTIES
 	
-	public Request requestObj;
+	private IRequest requestObj;
+	private PrimitiveLayer db;
 	private boolean interrupted = false;
 	
 	private String word;
 	private final int lang;
-	private HashMap<Integer, String> resultMap = new HashMap<Integer, String>();
+	private HashMap<Integer, String> resultMap;
 	
 	
 	// CONSTRUCTORS
 	
-	public PrimitiveRetrieval(Request requestObj, int lang){
+	public PrimitiveRetrieval(IRequest requestObj, int lang){
 		this.requestObj = requestObj;
 		this.lang = lang;
 	}
@@ -52,12 +53,12 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 	 */
 	@Override
 	public void eval() {
-		PrimitiveLayer db = (PrimitiveLayer) ThreadContext.getPrimitiveLayer(this.lang);
-		HashMap<Integer, String> map = db.getNodeMap();
+		db = (PrimitiveLayer) ThreadContext.getPrimitiveLayer(this.lang);
+		HashMap<Integer, String> map = db.getNodeMap(); // TODO maybe set this into interface
 		
 		//Iterate through until list is full
 		int c = 0;
-		resultMap.clear();
+		resultMap = new HashMap<Integer, String>();
 		for(String s : map.values()){
 			if(isInterrupted() || c >= ConfigHelper.getRETRIEVAL_SIZE()){
 				break;
@@ -68,7 +69,7 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 			}
 		}
 	}
-
+		
 	@Override
 	public void doResponse() {
 		if(!isInterrupted()){

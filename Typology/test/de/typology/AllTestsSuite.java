@@ -10,7 +10,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ de.typology.tools.AllTestsTools.class, de.typology.db.layer.AllTestsDBLayer.class, de.typology.db.persistence.AllTestsPersistence.class })
+@Suite.SuiteClasses({ de.typology.tools.AllTestsTools.class, de.typology.db.layer.AllTestsDBLayer.class, de.typology.db.persistence.AllTestsPersistence.class, 
+					  de.typology.db.retrieval.AllTestsRetrieval.class})
 public final class AllTestsSuite {
 	
 	@BeforeClass

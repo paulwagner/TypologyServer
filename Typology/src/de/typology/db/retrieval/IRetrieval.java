@@ -12,6 +12,7 @@ package de.typology.db.retrieval;
 
 import java.util.HashMap;
 
+import de.typology.requests.IRequest;
 import de.typology.requests.Request;
 import de.typology.tools.Resources;
 
@@ -25,7 +26,7 @@ public interface IRetrieval extends Runnable {
 	 * @see Request#Request(int, javax.servlet.http.HttpServletRequest,
 	 *      javax.servlet.http.HttpServletResponse)
 	 */
-	public Request requestObj = null;
+	public IRequest requestObj = null;
 	public int lang = Resources.LN_MAX;
 
 	// METHODS

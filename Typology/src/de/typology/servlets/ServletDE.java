@@ -29,6 +29,7 @@ import de.typology.db.layer.DBLayer;
 import de.typology.db.layer.PrimitiveLayer;
 import de.typology.db.persistence.DBConnection;
 import de.typology.db.persistence.IDBConnection;
+import de.typology.requests.IRequest;
 import de.typology.requests.Request;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.IOHelper;
@@ -55,6 +56,7 @@ public class ServletDE extends HttpServlet {
 	 */
 	public void init() throws ServletException {
 		// Load German Databases and Layers into ThreadContext
+		IOHelper.logContext("(ServletDE.init()) Starting up...");
 		try {
 			IDBConnection db = new DBConnection(); 
 			ThreadContext.setDB(db, LN_DE);
@@ -62,7 +64,9 @@ public class ServletDE extends HttpServlet {
 			ThreadContext.setPrimitiveLayer(new PrimitiveLayer(db), LN_DE);
 		} catch (Exception e) {
 			IOHelper.logErrorExceptionContext(e);
+			throw new ServletException(e);
 		}
+		IOHelper.logContext("(ServletDE.init()) Startup completed");
 	}
 
 	/**
@@ -76,7 +80,7 @@ public class ServletDE extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 		
 		IOHelper.logContext("(ServletDE.doPost()) New german request");
-		Request r = new Request(LN_DE, request, response);
+		IRequest r = new Request(LN_DE, request, response);
 		r.execute();
 		IOHelper.logContext("(ServletDE.doPost()) Finished german request");
 	}	

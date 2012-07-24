@@ -14,3 +14,4 @@ Libraries needed to run JUnit tests or test databases:
     You can get "tests.jar" from here and put it into your build path:
     http://search.maven.org/#search|ga|1|g%3A%22org.neo4j%22%20AND%20a%3A%22neo4j-kernel%22  
 
+   - PowerMock http://code.google.com/p/powermock/downloads/list

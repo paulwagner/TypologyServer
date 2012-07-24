@@ -43,7 +43,7 @@ import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
 
-public class Request {
+public class Request implements IRequest {
 
 	// PROPERTIES
 
@@ -75,9 +75,10 @@ public class Request {
 
 	// FUNCTIONS
 
-	/**
-	 * Execute request.
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#execute()
 	 */
+	@Override
 	public void execute() {
 
 		String s = requestObj.getParameter("do");
@@ -190,13 +191,10 @@ public class Request {
 
 	// CALLBACKS
 
-	/**
-	 * Callback method for Retrieval. Truncates and merges lists, then makes
-	 * response
-	 * 
-	 * @param edges
-	 *            _Full_ edges lists
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#doRetrievalCallback(java.util.HashMap, java.util.HashMap, java.util.HashMap, java.util.HashMap)
 	 */
+	@Override
 	public void doRetrievalCallback(HashMap<Double, String> edges1,
 			HashMap<Double, String> edges2, HashMap<Double, String> edges3,
 			HashMap<Double, String> edges4) {
@@ -210,13 +208,10 @@ public class Request {
 		}
 	}
 
-	/**
-	 * Callback method for PrimitiveRetrieval. Truncates list, then makes
-	 * response
-	 * 
-	 * @param list
-	 *            _Full_ result list
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#doPrimitiveRetrievalCallback(java.util.HashMap)
 	 */
+	@Override
 	public void doPrimitiveRetrievalCallback(HashMap<Integer, String> list) {
 		HashMap<Integer, String> result = new HashMap<Integer, String>();
 		if(list.size() > ConfigHelper.getRESULT_SIZE()){
