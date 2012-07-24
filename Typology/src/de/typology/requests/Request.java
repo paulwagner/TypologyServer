@@ -82,7 +82,7 @@ public class Request implements IRequest {
 	public void execute() {
 
 		String s = requestObj.getParameter("do");
-		if (s == null) {
+		if (s == null || s.isEmpty()) {
 			makeErrorResponse(SC_ERR,
 					"Unable to read function. Have you declared it?");
 			return;
@@ -261,6 +261,7 @@ public class Request implements IRequest {
 	 *            The message
 	 */
 	private void makeErrorResponse(int status, String msg) {
+		this.responseObj.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);		
 		makeResponse(new DataObjectSvr(status, msg));
 	}
 
