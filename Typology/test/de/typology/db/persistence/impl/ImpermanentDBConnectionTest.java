@@ -159,8 +159,9 @@ public class ImpermanentDBConnectionTest {
 				.get(ConfigHelper.getNAME_KEY(), "Wörtern").getSingle();
 		boolean haveHits = true;
 
-		for (Iterator<Relationship> iterator = anderen.getRelationships(
-				Direction.OUTGOING, db.getDn()[1]).iterator(); iterator
+		// Use iterator for avoiding warnings because of unused loop variable
+		for (Iterator<Relationship> iterator = anderen.getRelationships(Direction.OUTGOING,
+				db.getDn()[1]).iterator(); iterator
 				.hasNext();) {
 			haveHits = false;
 			break;
@@ -171,14 +172,14 @@ public class ImpermanentDBConnectionTest {
 
 	@Test
 	public void relationship_WeightFromNodeEin_2() {
-		Node anderen = db.getWordIndex().get(ConfigHelper.getNAME_KEY(), "Ein")
+		Node Ein = db.getWordIndex().get(ConfigHelper.getNAME_KEY(), "Ein")
 				.getSingle();
 		int c = 0;
 
-		for (Relationship r : anderen.getRelationships(Direction.OUTGOING,
+		for (Relationship r : Ein.getRelationships(Direction.OUTGOING,
 				db.getDn()[1])) {
-			c = (Integer) r.getEndNode().getProperty(
-					ConfigHelper.getCOUNT_KEY());
+			c = (Integer) r.getEndNode()
+					.getProperty(ConfigHelper.getCOUNT_KEY());
 			break;
 		}
 

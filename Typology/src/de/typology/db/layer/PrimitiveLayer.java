@@ -3,6 +3,7 @@
  * Please note: It has to be thread safe, because every request triggers a new thread using this layer!
  * 
  * Important: PLEASE NOTE THAT DB CAN BE CHANGED FROM OUTSIDE, SO CHECK FIRST IF IT'S RUNNING!!
+ * TODO return <word, count> not <lfnr, word>
  * 
  * @author Paul Wagner
  */
