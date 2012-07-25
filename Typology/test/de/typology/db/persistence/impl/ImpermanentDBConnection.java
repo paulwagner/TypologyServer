@@ -385,14 +385,9 @@ public class ImpermanentDBConnection implements IDBConnection {
 		HashMap<String, HashMap<Long, Relationship>> nodeMap3 = new HashMap<String, HashMap<Long, Relationship>>();
 		HashMap<String, HashMap<Long, Relationship>> nodeMap4 = new HashMap<String, HashMap<Long, Relationship>>();
 
-//		IOHelper.log("(DBTools.normDatabase()) Start norming whole database. This will take a while...");
-		System.out.println("Start norming database");
-
 		int cnt = 0;
-		int max_loc = 0;
+		double max_loc = 0d;
 		int cur = 0;
-//		IOHelper.log("(DBTools.normDatabase()) Buffer node relationships...");
-		System.out.println("Buffer database for norming...");
 		// Buffer node rels
 		String name = "";
 		HashMap<Long, Relationship> tmp = null;
@@ -426,10 +421,7 @@ public class ImpermanentDBConnection implements IDBConnection {
 				tmp.put(r.getId(), r);
 			}
 			nodeMap4.put(name, tmp);
-			System.out.println(cnt + ": Next node...");
 		}
-//		IOHelper.log("(DBTools.normDatabase()) Finished buffer node relationships.");
-		System.out.println("Finished prebuffering");
 
 		// Now iterate nodes and relationship to obtain loc norm
 		cnt = 0;
@@ -446,7 +438,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 			rel = nodeMap1.get(key);
 			set2 = rel.keySet();
 			max_loc = 0;
-			System.out.println("rel:1 " + (cnt + 1) + ": Get node maximum");
 			for (Long key2 : set2) {
 				// Get loc maximum
 				cur = (Integer) rel.get(key2).getProperty(
@@ -455,7 +446,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 					max_loc = cur;
 				}
 			}
-			System.out.println("rel:1 " + (cnt + 1) + ": Write node rels");
 			for (Long key2 : set2) {
 				cnt++;
 				// Write loc maximum
@@ -463,7 +453,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 				cur = (Integer) r.getProperty(ConfigHelper.getCOUNT_KEY());
 				r.setProperty(ConfigHelper.getREL_KEY(), cur / max_loc);
 				if (cnt % 50000 == 49999) {
-					System.out.println("Commiting...");
 					tx.success();
 					tx.finish();
 					tx = graph.beginTx();
@@ -477,7 +466,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 			rel = nodeMap2.get(key);
 			set2 = rel.keySet();
 			max_loc = 0;
-			System.out.println("rel:2 " + (cnt + 1) + ": Get node maximum");
 			for (Long key2 : set2) {
 				// Get loc maximum
 				cur = (Integer) rel.get(key2).getProperty(
@@ -486,7 +474,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 					max_loc = cur;
 				}
 			}
-			System.out.println("rel:2 " + (cnt + 1) + ": Write node rels");
 			for (Long key2 : set2) {
 				cnt++;
 				// Write loc maximum
@@ -494,7 +481,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 				cur = (Integer) r.getProperty(ConfigHelper.getCOUNT_KEY());
 				r.setProperty(ConfigHelper.getREL_KEY(), cur / max_loc);
 				if (cnt % 50000 == 49999) {
-					System.out.println("Commiting...");
 					tx.success();
 					tx.finish();
 					tx = graph.beginTx();
@@ -508,7 +494,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 			rel = nodeMap3.get(key);
 			set2 = rel.keySet();
 			max_loc = 0;
-			System.out.println("rel:3 " + (cnt + 1) + ": Get node maximum");
 			for (Long key2 : set2) {
 				// Get loc maximum
 				cur = (Integer) rel.get(key2).getProperty(
@@ -517,7 +502,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 					max_loc = cur;
 				}
 			}
-			System.out.println("rel:3 " + (cnt + 1) + ": Write node rels");
 			for (Long key2 : set2) {
 				cnt++;
 				// Write loc maximum
@@ -525,7 +509,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 				cur = (Integer) r.getProperty(ConfigHelper.getCOUNT_KEY());
 				r.setProperty(ConfigHelper.getREL_KEY(), cur / max_loc);
 				if (cnt % 50000 == 49999) {
-					System.out.println("Commiting...");
 					tx.success();
 					tx.finish();
 					tx = graph.beginTx();
@@ -539,7 +522,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 			rel = nodeMap4.get(key);
 			set2 = rel.keySet();
 			max_loc = 0;
-			System.out.println("rel:4 " + (cnt + 1) + ": Get node maximum");
 			for (Long key2 : set2) {
 				// Get loc maximum
 				cur = (Integer) rel.get(key2).getProperty(
@@ -548,7 +530,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 					max_loc = cur;
 				}
 			}
-			System.out.println("rel:4 " + (cnt + 1) + ": Write node rels");
 			for (Long key2 : set2) {
 				cnt++;
 				// Write loc maximum
@@ -556,7 +537,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 				cur = (Integer) r.getProperty(ConfigHelper.getCOUNT_KEY());
 				r.setProperty(ConfigHelper.getREL_KEY(), cur / max_loc);
 				if (cnt % 50000 == 49999) {
-					System.out.println("Commiting...");
 					tx.success();
 					tx.finish();
 					tx = graph.beginTx();
@@ -565,10 +545,7 @@ public class ImpermanentDBConnection implements IDBConnection {
 		}
 		tx.success();
 		tx.finish();
-		System.out.println("Commiting changes...");		
 		tx = graph.beginTx();
-//		IOHelper.log("(DBTools.normDatabase()) Finished norming database...");
-		System.out.println("Finished norming.");
 	}
 
 

@@ -106,10 +106,6 @@ public class DBConnection implements IDBConnection {
 		return MAX_RELATIONS;
 	}
 
-	public Node getReferenceNode() {
-		return REF_NODE;
-	}
-
 	public String getNeo4JVersion() {
 		if (this.graph != null) {
 			return this.graph.getKernelData().version().getVersion();

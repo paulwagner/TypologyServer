@@ -12,6 +12,7 @@ package de.typology.db.persistence;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -19,6 +20,8 @@ import java.io.File;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
 
 import de.typology.SetupHelperMethods;
 import de.typology.tools.ConfigHelper;
@@ -64,7 +67,7 @@ public class DBConnectionTest {
 	}
 	
 	@Test
-	public void getWordIndey_isWordIndexAccessible_notNull(){
+	public void getWordIndex_isWordIndexAccessible_notNull(){
 		assertNotNull("Check if created word index object is not null", db.getWordIndex());
 	}	
 
@@ -81,8 +84,18 @@ public class DBConnectionTest {
 	}
 
 	@Test
-	public void getRefNode_referenceNode_equalsGraphRefNode() {
-		assertEquals("Check if reference node equals the graph one", db.getReferenceNode(), db.getGraph().getReferenceNode());
+	public void isReferenceNode_referenceNode_true() {
+		assertTrue("Check if reference node returns true", db.isReferenceNode(db.getGraph().getReferenceNode()));
+	}
+
+	@Test
+	public void isReferenceNode_anotherNode_false() {
+		Transaction tx = db.getGraph().beginTx();
+		Node n = db.getGraph().createNode();
+		assertFalse("Check if another node returns false", db.isReferenceNode(n));
+		n.delete();
+		tx.success();
+		tx.finish();
 	}
 
 	// HELPER

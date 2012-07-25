@@ -37,7 +37,7 @@ public class ImpermanentDBConnectionClassTest {
 	public static void setUpBeforeClass() throws Exception {
 		SetupHelperMethods.initiateContextSupport();
 		db = new ImpermanentDBConnection();
-		db.fillWithText("Ein Test mit mehreren Wörtern. Und mit einem anderen Satz, aber ohne Komma. Ein Test.");
+		db.fillWithText("Ein Test mit mehreren Wörtern. Und mit einem anderen Satz, aber ohne Komma. Ein Test. Ein anderes.");
 	}
 
 	/**
@@ -169,19 +169,55 @@ public class ImpermanentDBConnectionClassTest {
 	}
 
 	@Test
-	public void relationship_WeightFromNodeEin_2() {
-		Node Ein = db.getWordIndex().get(ConfigHelper.getNAME_KEY(), "Ein")
+	public void relationship_WeightFromNodeTest_1() {
+		Node Test = db.getWordIndex().get(ConfigHelper.getNAME_KEY(), "Test")
 				.getSingle();
 		int c = 0;
 
-		for (Relationship r : Ein.getRelationships(Direction.OUTGOING,
+		for (Relationship r : Test.getRelationships(Direction.OUTGOING,
 				db.getDn()[1])) {
-			c = (Integer) r.getEndNode()
-					.getProperty(ConfigHelper.getCOUNT_KEY());
+			c = (Integer) r.getProperty(ConfigHelper.getCOUNT_KEY());
 			break;
 		}
 
-		assertEquals("Check weight of outgoing 1 edges from 'Ein'", 2, c);
+		assertEquals("Check weight of outgoing 1 edges from 'Test'", 1, c);
 	}
+	
 
+	@Test
+	public void relationship_NormFromNodemit_1() {
+		Node mit = db.getWordIndex().get(ConfigHelper.getNAME_KEY(), "mit")
+				.getSingle();
+		double c = 0;
+
+		for (Relationship r : mit.getRelationships(Direction.OUTGOING,
+				db.getDn()[1])) {
+			c = (Double) r.getProperty(ConfigHelper.getREL_KEY());
+			break;
+		}
+
+		assertEquals(1.0d, c, 0.01d);
+	}	
+
+	@Test
+	public void relationship_NormFromNodeEin_1And0p5() {
+		Node Ein = db.getWordIndex().get(ConfigHelper.getNAME_KEY(), "Ein")
+				.getSingle();
+		double c_Test = 0;
+		double c_anderes = 0;
+
+		for (Relationship r : Ein.getRelationships(Direction.OUTGOING,
+				db.getDn()[1])) {
+			if(((String) r.getEndNode().getProperty(ConfigHelper.getNAME_KEY())).equals("Test")){
+				c_Test = (Double) r.getProperty(ConfigHelper.getREL_KEY()); 
+			}
+			if(((String) r.getEndNode().getProperty(ConfigHelper.getNAME_KEY())).equals("anderes")){
+				c_anderes = (Double) r.getProperty(ConfigHelper.getREL_KEY()); 
+			}
+		}
+
+		assertEquals(1.0d, c_Test, 0.01d);
+		assertEquals(0.5d, c_anderes, 0.01d);
+	}	
+	
 }
