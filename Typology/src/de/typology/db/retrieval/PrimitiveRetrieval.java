@@ -54,7 +54,7 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 	@Override
 	public void eval() {
 		db = (PrimitiveLayer) ThreadContext.getPrimitiveLayer(this.lang);
-		HashMap<Integer, String> map = db.getNodeMap(); // TODO maybe set this into interface
+		HashMap<Integer, String> map = db.getNodeMap();
 		
 		//Iterate through until list is full
 		int c = 0;
