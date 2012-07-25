@@ -47,21 +47,20 @@ public class Request implements IRequest {
 
 	// PROPERTIES
 
-	public final int LANG;
+	private final int LANG;
 	private final HttpServletRequest requestObj;
 	private final HttpServletResponse responseObj;
 
-	public int function;
-	
-	public HttpSession session;
-	public String sid;
-	
+	private int function;
+
+	private HttpSession session;
+	private String sid;
+
 	// Primary keys of db tables are stored in session.
 	// Everything else gets queried on runtime
-	public String developer_key;
-	public int ulfnr = -1;
+	private String developer_key;
+	private int ulfnr = -1;
 
-	// private Gson jsonHandler = new Gson();
 	private Gson jsonHandler = ThreadContext.jsonHandler;
 
 	// CONSTRUCTOR
@@ -73,9 +72,40 @@ public class Request implements IRequest {
 		this.responseObj = response;
 	}
 
-	// FUNCTIONS
+	// GETTERS
 
-	/* (non-Javadoc)
+	/**
+	 * Get sessionid of loaded request
+	 * 
+	 * @return the sid
+	 */
+	public final String getSid() {
+		return sid;
+	}
+
+	/**
+	 * Get developer key of loaded request
+	 * 
+	 * @return the developer_key
+	 */
+	public final String getDeveloper_key() {
+		return developer_key;
+	}
+
+	/**
+	 * Get user number of loaded request.
+	 * 
+	 * @return the ulfnr
+	 */
+	public final int getUlfnr() {
+		return ulfnr;
+	}
+
+	// FUNCTION
+	
+	/**
+	 * Main execute method which triggers loaded request.
+	 * 
 	 * @see de.typology.requests.IRequest#execute()
 	 */
 	@Override
@@ -88,7 +118,7 @@ public class Request implements IRequest {
 			return;
 		}
 		this.function = translateFunctionName(s);
-		
+
 		// If we don't have a session and no initiatesession request, we don't
 		// want to do anything
 		this.session = this.requestObj.getSession(false);
@@ -97,9 +127,9 @@ public class Request implements IRequest {
 					"You need to create a session first using method initiateSession()");
 			return;
 		} else {
-			this.sid = getSessionId();
-			if (!loadSession()){
-				makeErrorResponse(SC_ERR_NO_SESSION,
+			if (!loadSession()) {
+				makeErrorResponse(
+						SC_ERR_NO_SESSION,
 						"Failed to load session necessary data from session. Perhaps you should create a new one...");
 				return;
 			}
@@ -115,7 +145,7 @@ public class Request implements IRequest {
 			return;
 		case -1:
 			makeErrorResponse(SC_ERR,
-					"Unknown function. Refer to wiki.typology.de for the API");			
+					"Unknown function. Refer to wiki.typology.de for the API");
 			return;
 		default:
 			makeErrorResponse(SC_ERR,
@@ -160,9 +190,9 @@ public class Request implements IRequest {
 		/**
 		 * TODO implement method
 		 * 
-		 * 1) check given developer key
-		 * 2) If uid given -> create or update given user
-		 * 3) create or update session in db with expiredate(confighelper value wich is also set in sessionheaders)
+		 * 1) check given developer key 2) If uid given -> create or update
+		 * given user 3) create or update session in db with
+		 * expiredate(confighelper value wich is also set in sessionheaders)
 		 * 
 		 * // Session handling: Create session if necessary and handle session
 		 * id // If we got a uid, its stored in the session, because we don't
@@ -191,8 +221,11 @@ public class Request implements IRequest {
 
 	// CALLBACKS
 
-	/* (non-Javadoc)
-	 * @see de.typology.requests.IRequest#doRetrievalCallback(java.util.HashMap, java.util.HashMap, java.util.HashMap, java.util.HashMap)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.typology.requests.IRequest#doRetrievalCallback(java.util.HashMap,
+	 * java.util.HashMap, java.util.HashMap, java.util.HashMap)
 	 */
 	@Override
 	public void doRetrievalCallback(HashMap<Double, String> edges1,
@@ -208,19 +241,23 @@ public class Request implements IRequest {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.typology.requests.IRequest#doPrimitiveRetrievalCallback(java.util.HashMap)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.typology.requests.IRequest#doPrimitiveRetrievalCallback(java.util.
+	 * HashMap)
 	 */
 	@Override
 	public void doPrimitiveRetrievalCallback(HashMap<Integer, String> list) {
 		HashMap<Integer, String> result = new HashMap<Integer, String>();
-		if(list.size() > ConfigHelper.getRESULT_SIZE()){
+		if (list.size() > ConfigHelper.getRESULT_SIZE()) {
 			storeInSession("list.primitive", list);
 		} else {
 			storeInSession("list.primitive", null);
-		}		
+		}
 		fillResultSet(list, result, 0);
-		
+
 		GetPrimitiveObjectSvr data = new GetPrimitiveObjectSvr();
 		data.list = result;
 		data.totalcount = list.size();
@@ -261,7 +298,8 @@ public class Request implements IRequest {
 	 *            The message
 	 */
 	private void makeErrorResponse(int status, String msg) {
-		this.responseObj.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);		
+		this.responseObj
+				.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 		makeResponse(new DataObjectSvr(status, msg));
 	}
 
@@ -328,27 +366,40 @@ public class Request implements IRequest {
 		return null;
 	}
 
-	 /** Lookup an integer value stored in the current session.
-	  * If it wasn't successful (key not found or cast failure), the
-	  * default value will be returned
+	/**
+	 * Lookup a string value stored in the current session
 	 * 
 	 * @param key
 	 *            Key for lookup
+	 * @return value for key or null if session or key not found
+	 */
+	private String getSessionValueAsString(String key) {
+		return (String) getSessionValue(key);
+	}
+
+	/**
+	 * Lookup an integer value stored in the current session. If it wasn't
+	 * successful (key not found or cast failure), the default value will be
+	 * returned
+	 * 
+	 * @param key
+	 *            Key for lookup
+	 * @param _default
+	 *            Default return value
 	 * @return value for key or default
 	 */
-	private int getSessionValueAsInteger(String key, int _default) {
+	private Integer getSessionValueAsInteger(String key, int _default) {
 		Object o = getSessionValue(key);
-		if(o == null){
+		if (o == null) {
 			return _default;
 		}
-		try{
-			int r = Integer.parseInt((String) o);
-			return r;
-		} catch (NumberFormatException e){
+		try {
+			return (Integer) o;
+		} catch (ClassCastException e) {
 			return _default;
 		}
 	}
-	
+
 	/**
 	 * Get id of current session
 	 * 
@@ -360,20 +411,21 @@ public class Request implements IRequest {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Load values of session to class.
 	 * 
 	 * @return true if loaded data is sufficient for run
 	 */
-	private boolean loadSession(){
-		if(this.session != null){
+	private boolean loadSession() {
+		if (this.session != null) {
 			this.sid = session.getId();
 			this.ulfnr = getSessionValueAsInteger("ulfnr", -1);
-			this.developer_key = (String) getSessionValue("developer_key");
-			if(this.developer_key == null){
+			this.developer_key = getSessionValueAsString("developer_key");
+			if (this.developer_key == null) {
 				return false;
-			}			
+			}
+			return true;
 		}
 		return false;
 	}
