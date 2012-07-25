@@ -3,6 +3,7 @@
  * 
  * TODO use a mock interface to get rid of an implemented dbconnection here if possible to make test independent.
  * Otherwise for example, an error in DBTools.appendTextAndNorm() could cause this test to fail.
+ * TODO declare as class test because there is only one important method in class
  * 
  * @author Paul Wagner
  */
