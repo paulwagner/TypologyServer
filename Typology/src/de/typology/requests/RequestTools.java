@@ -34,7 +34,7 @@ public class RequestTools {
 		if(u_name.equals("GETMORE")){
 			return FN_GETMORE;			
 		}
-		if(u_name.equals("GEMETRICS")){
+		if(u_name.equals("GETMETRICS")){
 			return FN_GETMETRICS;			
 		}
 		if(u_name.equals("STOREMETRICS")){
@@ -59,6 +59,9 @@ public class RequestTools {
 		int c = 0;
 		int r = 0;
 		result.clear();
+		if(starting < 0){
+			return;
+		}
 		for (java.util.Map.Entry<Integer, String> e : list.entrySet()) {
 			if(r >= ConfigHelper.getRESULT_SIZE()){
 				break;

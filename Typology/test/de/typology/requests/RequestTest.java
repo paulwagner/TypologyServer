@@ -49,6 +49,8 @@ public class RequestTest {
 
 	private static Gson jsonHandler = new Gson();
 	
+	// SETUP
+	
 	@Before
 	public void setUp() throws Exception {
 		// Create mocking interfaces
@@ -58,6 +60,8 @@ public class RequestTest {
 		request = new Request(LN_MAX, servReq, servResp);
 	}
 
+	// TESTS
+	
 	@Test
 	public void execute_emptyDoParameter_SCERR() {
 		// Prepare request for mocking
