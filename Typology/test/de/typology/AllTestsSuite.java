@@ -5,6 +5,7 @@
  */
 package de.typology;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -18,6 +19,11 @@ public final class AllTestsSuite {
 	public static void setUpBeforeClass(){
 		System.out.println("Starting test suite");
 		System.out.println("Logfile for this test-suite: " + SetupHelperMethods.logfilename);
+	}
+	
+	@AfterClass
+	public static void tearDownAfterClass(){
+		System.out.println("Test suite completed");
 	}
 	
 }
