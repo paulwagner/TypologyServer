@@ -1,9 +1,7 @@
 /**
- * Test case for class ImpermanentDBConnection.
+ * Class test case for ImpermanentDBConnection.
+ * Test mainly method fillWithText() because this invokes all the action the class has.
  *
- * TODO think about test again. Dependency to DBTools is not nice... -> as test helper method
- * TODO also test norming
- * 
  * @author Paul Wagner
  */
 package de.typology.db.persistence.impl;
@@ -24,7 +22,7 @@ import org.neo4j.graphdb.Relationship;
 import de.typology.SetupHelperMethods;
 import de.typology.tools.ConfigHelper;
 
-public class ImpermanentDBConnectionTest {
+public class ImpermanentDBConnectionClassTest {
 
 	private static ImpermanentDBConnection db;
 
