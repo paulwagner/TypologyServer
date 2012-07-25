@@ -32,7 +32,7 @@ import de.typology.requests.IRequest;
 import de.typology.threads.ThreadContext;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(ThreadContext.class)
+@PrepareForTest({ThreadContext.class, PrimitiveLayer.class, IRequest.class})
 public class PrimitiveRetrievalTest {
 
 	private static PrimitiveRetrieval retrieval;

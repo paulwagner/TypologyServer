@@ -1,6 +1,6 @@
 /**
  * Impermanent database connection implementation.
- * This class will simulate a little test graph with specified data, wich may be interesting also for many purposes...
+ * This class will simulate a little test graph with specified data, wich may be interesting for many purposes...
  * 
  * @author Paul Wagner
  */
