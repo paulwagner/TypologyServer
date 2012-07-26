@@ -1,8 +1,6 @@
 /**
  * Test case for Primitive Retrieval.
  * 
- * TODO declare as class test
- * 
  * @author Paul Wagner
  */
 package de.typology.db.retrieval;

@@ -8,7 +8,6 @@ package de.typology.db.persistence.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import org.neo4j.graphdb.Direction;
@@ -37,7 +36,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 
 	private String DB_PATH = "test";
 	private String INDEX_KEY = ConfigHelper.getNAME_KEY();
-	private String CACHE_TYPE = ConfigHelper.getCACHE_TYPE();
 	private Integer MAX_RELATIONS = ConfigHelper.getMAX_RELATIONS();
 
 	private boolean shutdown = false;
@@ -144,7 +142,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 			String cache_type) throws Exception {
 		this.INDEX_KEY = index_key;
 		this.MAX_RELATIONS = max_relations;
-		this.CACHE_TYPE = cache_type;
 
 		IOHelper.logContext("(DBConnectionTestImpl.init()) Creating new test graph...");
 		this.graph = new TestGraphDatabaseFactory()

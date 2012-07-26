@@ -1,24 +1,38 @@
+/**
+ * Test case for DBTools.
+ * 
+ * @author Paul Wagner
+ */
 package de.typology.db;
 
 import static org.junit.Assert.assertFalse;
 
 import java.util.Iterator;
 
-import org.junit.Before;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.test.TestGraphDatabaseFactory;
 
 import de.typology.SetupHelperMethods;
-import de.typology.db.persistence.impl.ImpermanentDBConnection;
 
 public class DBToolsTest {
 
-	public static ImpermanentDBConnection db;
+	private GraphDatabaseService graph;
 
+	// SETUP
+	
+	private static enum RelType implements RelationshipType
+	{
+	    TEST
+	}
+	
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		SetupHelperMethods.initiateContextSupport();
@@ -26,20 +40,23 @@ public class DBToolsTest {
 
 	@Before
 	public void setUp() throws Exception {
-		db = new ImpermanentDBConnection();
+		graph = new TestGraphDatabaseFactory()
+		.newImpermanentDatabaseBuilder().newGraphDatabase();
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		db.shutdown();
+		graph.shutdown();
 	}
 
+	// TESTS
+	
 	@Test
 	public void deleteRelationship_createAndDeleteRelationship() {
-		Transaction tx = db.getGraph().beginTx();
-		Node n1 = db.getGraph().createNode();
-		Node n2 = db.getGraph().createNode();
-		n1.createRelationshipTo(n2, db.getDn()[1]);
+		Transaction tx = graph.beginTx();
+		Node n1 = graph.createNode();
+		Node n2 = graph.createNode();
+		n1.createRelationshipTo(n2, RelType.TEST);
 
 		DBTools.deleteRelationships(n1);
 
@@ -59,10 +76,10 @@ public class DBToolsTest {
 
 	@Test
 	public void deleteNode_createAndDeleteNodeWithRelationships() {
-		Transaction tx = db.getGraph().beginTx();
-		Node n1 = db.getGraph().createNode();
-		Node n2 = db.getGraph().createNode();
-		n1.createRelationshipTo(n2, db.getDn()[1]);
+		Transaction tx = graph.beginTx();
+		Node n1 = graph.createNode();
+		Node n2 = graph.createNode();
+		n1.createRelationshipTo(n2, RelType.TEST);
 
 		DBTools.deleteNode(n1);
 		DBTools.deleteNode(n2);
@@ -70,9 +87,9 @@ public class DBToolsTest {
 		tx.finish();
 
 		boolean hasNodes = false;
-		for (Iterator<Node> iterator = db.getGraph().getAllNodes().iterator(); iterator
+		for (Iterator<Node> iterator = graph.getAllNodes().iterator(); iterator
 				.hasNext();) {
-			if (db.getGraph().getReferenceNode().getId() != iterator.next()
+			if (graph.getReferenceNode().getId() != iterator.next()
 					.getId()) {
 				hasNodes = true;
 				break;

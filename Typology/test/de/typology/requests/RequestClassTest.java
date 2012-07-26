@@ -1,10 +1,6 @@
 /**
- * Test case for request class.
+ * Class test case for request class.
  * At the moment we just test errors.
- * 
- * TODO also test normal behaviour in mocking iretrieval in and check which instance is running when eval() is called (in new thread).
- * but for this there has to be an opportunity to return a method, or mocking in null object and expect nullpointerexception?
- * TODO declare as class test
  * 
  * @author Paul Wagner
  * 
@@ -41,7 +37,7 @@ import de.typology.requests.interfaces.svr.DataObjectSvr;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({})
-public class RequestTest {
+public class RequestClassTest {
 
 	private static Request request; // Class under test
 	// Request Interfaces to mock

@@ -1,9 +1,6 @@
 /**
- * Test case for DBConnection. This test really creates a database on your drive,
+ * Test case for DBConnection. This test really creates a database on your hdd,
  * which is uncommon for a test, but the only thing we can test here.
- * 
- * TODO think over test again. dependency to DBTools is not nice... -> as test helper method
- * TODO also test norming
  * 
  * @author Paul Wagner
  */
