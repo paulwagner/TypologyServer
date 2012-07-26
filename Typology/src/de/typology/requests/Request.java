@@ -15,14 +15,7 @@ package de.typology.requests;
 
 import static de.typology.requests.RequestTools.fillResultSet;
 import static de.typology.requests.RequestTools.translateFunctionName;
-import static de.typology.tools.Resources.FN_GETPRIMITIVE;
-import static de.typology.tools.Resources.FN_GETQUERY;
-import static de.typology.tools.Resources.FN_GETRESULT;
-import static de.typology.tools.Resources.FN_INITIATESESSION;
-import static de.typology.tools.Resources.SC_ERR;
-import static de.typology.tools.Resources.SC_ERR_NO_SESSION;
-import static de.typology.tools.Resources.SC_WRN_RET_INTERRUPTED;
-import static de.typology.tools.Resources.SC_WRN_RET_TIMEOUT;
+import static de.typology.tools.Resources.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,8 +28,10 @@ import javax.servlet.http.HttpSession;
 import com.google.gson.Gson;
 
 import de.typology.requests.interfaces.client.GetPrimitiveObjectClient;
+import de.typology.requests.interfaces.client.InitiateSessionObjectClient;
 import de.typology.requests.interfaces.svr.DataObjectSvr;
 import de.typology.requests.interfaces.svr.GetPrimitiveObjectSvr;
+import de.typology.requests.interfaces.svr.InitiateSessionObjectSvr;
 import de.typology.retrieval.IRetrieval;
 import de.typology.retrieval.PrimitiveRetrieval;
 import de.typology.threads.ThreadContext;
@@ -121,12 +116,13 @@ public class Request implements IRequest {
 
 		// If we don't have a session and no initiatesession request, we don't
 		// want to do anything
-		this.session = this.requestObj.getSession(false);
-		if ((this.session == null && this.function != FN_INITIATESESSION)) {
-			makeErrorResponse(SC_ERR_NO_SESSION,
-					"You need to create a session first using method initiateSession()");
-			return;
-		} else {
+		if(this.function != FN_INITIATESESSION){
+			this.session = this.requestObj.getSession(false);
+			if(this.session == null){
+				makeErrorResponse(SC_ERR_NO_SESSION,
+						"You need to create a session first using method initiateSession()");
+				return;
+			}			
 			if (!loadSession()) {
 				makeErrorResponse(
 						SC_ERR_NO_SESSION,
@@ -134,7 +130,7 @@ public class Request implements IRequest {
 				return;
 			}
 		}
-
+		
 		// Hop into requested function
 		switch (this.function) {
 		case FN_GETPRIMITIVE:
@@ -184,45 +180,48 @@ public class Request implements IRequest {
 	 * because the client needs to know when the session has been created.
 	 */
 	private void initiateSession() {
-		this.session = this.requestObj.getSession();
-		this.sid = getSessionId();
 
-		/**
-		 * TODO implement method
-		 * 
-		 * 1) check given developer key 2) If uid given -> create or update
-		 * given user 3) create or update session in db with
-		 * expiredate(confighelper value wich is also set in sessionheaders)
-		 * 
-		 * // Session handling: Create session if necessary and handle session
-		 * id // If we got a uid, its stored in the session, because we don't
-		 * have to // send it again and again then HttpSession session =
-		 * requestObj.getSession(); String tmp = (String)
-		 * session.getAttribute("uid"); if (this.UID == null ||
-		 * this.UID.isEmpty()) { // No uid given can mean we don't have one or
-		 * its already in session if (tmp != null && !tmp.isEmpty()) { this.UID
-		 * = tmp; } else { this.UID = session.getId(); this.TYPE =
-		 * CS_TYPE_SESSION; } } else { // If we have one we store it in session
-		 * unless that has been done // before if (tmp != null &&
-		 * !tmp.isEmpty()) { session.setAttribute("uid", this.UID); } else {
-		 * this.UID = tmp; } }
-		 * 
-		 * // Config Handling: // Configuration can be overridden by further
-		 * requests (not like uid) if (data.config == null) { this.config =
-		 * (Object[]) session.getAttribute("config"); } else {
-		 * session.setAttribute("config", data.config); this.config =
-		 * data.config; }
-		 * 
-		 * // TODO when implemented, gzip support should be set (or disabled) in
-		 * // the config
-		 * 
-		 */
+		// Load input data
+		String s = requestObj.getParameter("data");
+
+		InitiateSessionObjectClient data = jsonHandler.fromJson(s,
+				InitiateSessionObjectClient.class);
+		if (data == null || data.dkey == null || data.dkey.isEmpty()) {
+			makeErrorResponse(
+					SC_ERR_INSUFFICIENT_REQUEST_DATA,
+					"Insufficient request data. We need at least the developer key. Refer to wiki.typology.de for the API");
+			return;
+		}		
+		
+		try{
+			this.session = this.requestObj.getSession();
+			this.sid = getSessionId();
+			
+			// TODO connect to mysql database through RDBSessionConnector and check if developer key is valid. For now every key is valid.
+			this.developer_key = data.dkey;
+			storeInSession("developer_key", this.developer_key);
+		
+			// TODO if we have an uid key we have to create or update the user with given userinfo and config (using RDBSessionConnector) and write to this.ulfnr
+			
+			// TODO now create session with developer link (optional with user link) using RDBSessionConnector
+		
+		} catch (Exception e){
+			// If there is an error, destroy session or it will remain in db forever!
+			if(this.session != null){
+				this.session.invalidate();
+			}
+		}
+		
+		// If everything successful make response
+		InitiateSessionObjectSvr response = new InitiateSessionObjectSvr();
+		makeResponse(response);
+		
 	}
 
 	// CALLBACKS
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Perform response from retrieval thread
 	 * 
 	 * @see de.typology.requests.IRequest#doRetrievalCallback(java.util.HashMap,
 	 * java.util.HashMap, java.util.HashMap, java.util.HashMap)
@@ -241,8 +240,8 @@ public class Request implements IRequest {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Perform response from primitive retrieval thread
 	 * 
 	 * @see
 	 * de.typology.requests.IRequest#doPrimitiveRetrievalCallback(java.util.
@@ -274,9 +273,9 @@ public class Request implements IRequest {
 	 */
 	private void makeResponse(DataObjectSvr d) {
 		// TODO Maybe we have to parse d to its original type if gson can't
-		// handle it that was
+		// handle it that way
 		String data = jsonHandler.toJson(d);
-		// TODO evt. Header setzen, noch weitere infos?
+		// TODO set header?
 		try {
 			PrintWriter out = responseObj.getWriter();
 			out.write(data);

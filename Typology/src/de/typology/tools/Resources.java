@@ -92,5 +92,7 @@ public final class Resources {
 	
 	public static final int SC_ERR_NO_SESSION = 3;
 	public static final int SC_ERR_TOO_OLD_VERSION = 4;
+	public static final int SC_ERR_INSUFFICIENT_REQUEST_DATA = 6;
+	public static final int SC_ERR_WRONG_INFORMATION = 7;
 	
 }
