@@ -147,9 +147,6 @@ public class ImpermanentDBConnection implements IDBConnection {
 		this.CACHE_TYPE = cache_type;
 
 		IOHelper.logContext("(DBConnectionTestImpl.init()) Creating new test graph...");
-		Map<String, String> config = new HashMap<String, String>();
-		config.put("cache_type", this.CACHE_TYPE);
-
 		this.graph = new TestGraphDatabaseFactory()
 				.newImpermanentDatabaseBuilder().newGraphDatabase();
 

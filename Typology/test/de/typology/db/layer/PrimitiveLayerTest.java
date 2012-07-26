@@ -1,31 +1,42 @@
 /**
  * Test case for primitivelayer class
  * 
- * TODO use a mock interface to get rid of an implemented dbconnection here if possible to make test independent.
- * Otherwise for example, an error in DBTools.appendTextAndNorm() could cause this test to fail.
- * TODO declare as class test because there is only one important method in class
- * 
  * @author Paul Wagner
  */
 package de.typology.db.layer;
 
-import static org.junit.Assert.*;
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
+import org.neo4j.kernel.EmbeddedGraphDatabase;
+import org.neo4j.test.TestGraphDatabaseFactory;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.typology.SetupHelperMethods;
 import de.typology.db.persistence.IDBConnection;
-import de.typology.db.persistence.impl.ImpermanentDBConnection;
+import de.typology.tools.ConfigHelper;
 
+@RunWith(PowerMockRunner.class)
+//@PrepareForTest({IDBConnection.class}) <-- triggers cache type soft not found error in neo4j database factory
 public class PrimitiveLayerTest {
 
 	public static IDBConnection db;
 	public static PrimitiveLayer layer;
+	public static GraphDatabaseService graph;
 	
 	
 	// SETUP
@@ -38,37 +49,62 @@ public class PrimitiveLayerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		SetupHelperMethods.initiateContextSupport();
-		db = new ImpermanentDBConnection();
-		((ImpermanentDBConnection) db).fillWithText("Das sind zwei Worte. Das ist ein Wort. Das sollte am häufigsten sein. sind zwei Worte. ist ein Wort. sollte nicht am häufigsten sein. allein ist nur nur nicht.");
-		layer = new PrimitiveLayer(db);
+		
+		graph = new TestGraphDatabaseFactory()
+		.newImpermanentDatabaseBuilder().newGraphDatabase();
+		Transaction tx = graph.beginTx();
+		createNodeProperties("Das", 3);
+		createNodeProperties("allein", 1);
+		createNodeProperties("ein", 2);
+		createNodeProperties("Sind", 2);
+		tx.success();
+		tx.finish();
 	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-		db.shutdown();
+	
+	private static void createNodeProperties(String name, int count){
+		Node n = graph.createNode();
+		n.setProperty(ConfigHelper.getNAME_KEY(), name);
+		n.setProperty(ConfigHelper.getCOUNT_KEY(), count);	
 	}
-
+	
+	@Before
+	public void setUp(){
+		db = PowerMock.createMock(IDBConnection.class);
+	}
 
 	// TESTS
 	
-	/**
-	 * Test method for {@link de.typology.db.layer.PrimitiveLayer#loadLayer()}.
-	 * Check if layer map has any data stored.
-	 */
 	@Test
-	public void loadLayer_layerMapSize_greaterZero() {
+	public void loadLayer_dbIsRunning_mapSizegreaterZero() {
+		expect(db.isShutdown()).andReturn(false);
+		expect(db.getGraph()).andReturn((EmbeddedGraphDatabase) graph);	
+		expect(db.getGraph()).andReturn((EmbeddedGraphDatabase) graph);	
+		replay(db);
+		layer = new PrimitiveLayer(db);
+		verify(db);
+
 		assertTrue(layer.getNodeMap().size() > 0);
 	}
 	
-	/**
-	 * Test method for {@link de.typology.db.layer.PrimitiveLayer#loadLayer()}.
-	 * Check if first word with current test database is "Das"
-	 */
 	@Test
-	public void loadLayer_firstWord_Das() {
+	public void loadLayer_dbIsShutdown_mapSizeEqualsZero(){
+		expect(db.isShutdown()).andReturn(true);
+		replay(db);
+		layer = new PrimitiveLayer(db);
+		verify(db);
+
+		assertEquals(layer.getNodeMap().size(), 0);
+	}
+	
+	@Test
+	public void loadLayer_dbIsRunning_firstWordDas() {
+		expect(db.isShutdown()).andReturn(false);
+		expect(db.getGraph()).andReturn((EmbeddedGraphDatabase) graph);	
+		expect(db.getGraph()).andReturn((EmbeddedGraphDatabase) graph);	
+		replay(db);
+		layer = new PrimitiveLayer(db);
+		verify(db);
+
 		HashMap<Integer, String> map = layer.getNodeMap();
 		String first = "";
 		for (Entry<Integer, String> e : map.entrySet()) {
@@ -78,12 +114,15 @@ public class PrimitiveLayerTest {
 		assertEquals("Check if first map entry equals expected", "Das", first);
 	}
 	
-	/**
-	 * Test method for {@link de.typology.db.layer.PrimitiveLayer#loadLayer()}.
-	 * Check if last word with current test database is "allein"
-	 */
 	@Test
 	public void loadLayer_lastWord_allein() {
+		expect(db.isShutdown()).andReturn(false);
+		expect(db.getGraph()).andReturn((EmbeddedGraphDatabase) graph);	
+		expect(db.getGraph()).andReturn((EmbeddedGraphDatabase) graph);	
+		replay(db);
+		layer = new PrimitiveLayer(db);
+		verify(db);
+
 		HashMap<Integer, String> map = layer.getNodeMap();
 		String last = "";
 		for (Entry<Integer, String> e : map.entrySet()) {
@@ -92,12 +131,15 @@ public class PrimitiveLayerTest {
 		assertEquals("Check if first map entry equals expected", "allein", last);
 	}
 	
-	/**
-	 * Test method for {@link de.typology.db.layer.PrimitiveLayer#loadLayer()}.
-	 * Check if words with equal values sort by key
-	 */
 	@Test
 	public void loadLayer_equalValuesSortByKey_einBeforeSind() {
+		expect(db.isShutdown()).andReturn(false);
+		expect(db.getGraph()).andReturn((EmbeddedGraphDatabase) graph);	
+		expect(db.getGraph()).andReturn((EmbeddedGraphDatabase) graph);	
+		replay(db);
+		layer = new PrimitiveLayer(db);
+		verify(db);
+
 		HashMap<Integer, String> map = layer.getNodeMap();
 		String word = "";
 		for (Entry<Integer, String> e : map.entrySet()) {
@@ -109,5 +151,4 @@ public class PrimitiveLayerTest {
 		assertEquals("Check if 'ein' is before 'sind'", "ein", word);
 	}
 	
-
 }
