@@ -4,7 +4,7 @@
  * 
  * @author Paul Wagner
  */
-package de.typology.db.persistence.mysql;
+package de.typology.rdb.persistence;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
