@@ -1,4 +1,4 @@
-package de.typology.db.retrieval;
+package de.typology.retrieval;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

@@ -3,7 +3,7 @@
  * 
  * @author Paul Wagner
  */
-package de.typology.db.retrieval;
+package de.typology.retrieval;
 
 import static de.typology.tools.Resources.LN_MAX;
 import static org.easymock.EasyMock.expect;
@@ -29,6 +29,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.typology.SetupHelperMethods;
 import de.typology.db.layer.PrimitiveLayer;
 import de.typology.requests.IRequest;
+import de.typology.retrieval.PrimitiveRetrieval;
 import de.typology.threads.ThreadContext;
 
 @RunWith(PowerMockRunner.class)

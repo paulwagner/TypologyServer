@@ -4,7 +4,7 @@
  * 
  * @author Paul Wagner
  */
-package de.typology.db.retrieval;
+package de.typology.retrieval;
 
 import java.util.HashMap;
 

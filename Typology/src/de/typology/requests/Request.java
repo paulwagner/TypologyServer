@@ -34,11 +34,11 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
-import de.typology.db.retrieval.IRetrieval;
-import de.typology.db.retrieval.PrimitiveRetrieval;
 import de.typology.requests.interfaces.client.GetPrimitiveObjectClient;
 import de.typology.requests.interfaces.svr.DataObjectSvr;
 import de.typology.requests.interfaces.svr.GetPrimitiveObjectSvr;
+import de.typology.retrieval.IRetrieval;
+import de.typology.retrieval.PrimitiveRetrieval;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
