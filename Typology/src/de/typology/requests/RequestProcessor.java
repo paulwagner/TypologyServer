@@ -43,6 +43,7 @@ public class RequestProcessor implements IRequestProcessor {
 	 */
 	@Override
 	public void processRequest(IRequest request) {
+		request.getSession(); // First thing to do is load session to context if available
 
 		String s = request.getRequestParameter("do");
 		if (s == null || s.isEmpty()) {

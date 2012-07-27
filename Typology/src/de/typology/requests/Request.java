@@ -49,7 +49,6 @@ public class Request extends AbstractRequest {
 		if (this.responseObj == null) {
 			throw new Exception("Response object is null!");
 		}
-		getSession();
 	}
 
 	// METHODS
@@ -165,7 +164,7 @@ public class Request extends AbstractRequest {
 	 */
 	@Override
 	public void getSession() {
-		this.session = this.requestObj.getSession(true);
+		this.session = this.requestObj.getSession(false);
 		if (this.session != null) {
 			this.sid = this.session.getId();
 		}
@@ -176,9 +175,7 @@ public class Request extends AbstractRequest {
 	 */
 	@Override
 	public void createSession() throws Exception {
-		if (this.session != null) {
-			session.invalidate();
-		}
+		destroySession();
 		this.session = this.requestObj.getSession();
 		if (this.session == null) {
 			throw new Exception("Couldn't create session!");
