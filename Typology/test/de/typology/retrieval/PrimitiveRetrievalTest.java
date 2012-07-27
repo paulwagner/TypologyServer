@@ -28,19 +28,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import de.typology.SetupHelperMethods;
 import de.typology.db.layer.PrimitiveLayer;
-import de.typology.requests.IRequest;
+import de.typology.requests.IRequestProcessor;
 import de.typology.retrieval.PrimitiveRetrieval;
 import de.typology.threads.ThreadContext;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ThreadContext.class, PrimitiveLayer.class, IRequest.class})
+@PrepareForTest({ThreadContext.class, PrimitiveLayer.class, IRequestProcessor.class})
 public class PrimitiveRetrievalTest {
 
 	private static PrimitiveRetrieval retrieval;
 
 	private static HashMap<Integer, String> map = new HashMap<Integer, String>();
 	private static PrimitiveLayer layer;
-	private static IRequest request; 
+	private static IRequestProcessor request; 
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -57,7 +57,7 @@ public class PrimitiveRetrievalTest {
 	public void setUp(){
 		// Instantiate test class
 		//request = new RequestTestImpl();
-		request = PowerMock.createMock(IRequest.class);
+		request = PowerMock.createMock(IRequestProcessor.class);
 		retrieval = new PrimitiveRetrieval(request, LN_MAX);
 	}
 

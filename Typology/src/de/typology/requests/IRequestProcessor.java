@@ -1,5 +1,9 @@
-/**
- * Interface for request Objects and JUnit test of request classes.
+/** 
+ * Request processor class that handles threads for logging, retrieval and dbupdate.
+ * This class is instantiated once on startup and fed with request data references, created in the servlet.
+ * So we don't have to worry about request threads on our own, just about this request class.
+ * 
+ * So everything concerning a request starts from here, not from the servlet!
  * 
  * @author Paul Wagner
  */
@@ -12,16 +16,17 @@ public interface IRequestProcessor {
 	/**
 	 * Execute request.
 	 */
-	public abstract void execute();
+	public abstract void processRequest(Request request);
 
 	/**
 	 * Callback method for Retrieval. Truncates and merges lists, then makes
 	 * response
 	 * 
+	 * @param function function number that retrieval is running at. Used for callback.
 	 * @param edges
 	 *            _Full_ edges lists
 	 */
-	public abstract void doRetrievalCallback(HashMap<Double, String> edges1,
+	public abstract void doRetrievalCallback(int function, HashMap<Double, String> edges1,
 			HashMap<Double, String> edges2, HashMap<Double, String> edges3,
 			HashMap<Double, String> edges4);
 
