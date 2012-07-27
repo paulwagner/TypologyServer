@@ -9,35 +9,11 @@
  */
 package de.typology.requests;
 
-import java.util.HashMap;
-
 public interface IRequestProcessor {
 
 	/**
 	 * Execute request.
 	 */
-	public abstract void processRequest(Request request);
-
-	/**
-	 * Callback method for Retrieval. Truncates and merges lists, then makes
-	 * response
-	 * 
-	 * @param function function number that retrieval is running at. Used for callback.
-	 * @param edges
-	 *            _Full_ edges lists
-	 */
-	public abstract void doRetrievalCallback(int function, HashMap<Double, String> edges1,
-			HashMap<Double, String> edges2, HashMap<Double, String> edges3,
-			HashMap<Double, String> edges4);
-
-	/**
-	 * Callback method for PrimitiveRetrieval. Truncates list, then makes
-	 * response
-	 * 
-	 * @param list
-	 *            _Full_ result list
-	 */
-	public abstract void doPrimitiveRetrievalCallback(
-			HashMap<Integer, String> list);
+	public abstract void processRequest(IRequest request);
 
 }

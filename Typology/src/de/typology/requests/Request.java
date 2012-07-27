@@ -1,19 +1,24 @@
 /**
  * Request data class that holds just the necessary data to process a request.
- * Here shouldn't be any request implementation!
- *
- * TODO define this as interface
+ * Here shouldn't be any request implementation, just the necessary data/session handling.
  *
  * @author Paul Wagner
  *
  */
 package de.typology.requests;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class Request {
+import de.typology.requests.interfaces.svr.DataObjectSvr;
+import de.typology.threads.ThreadContext;
+import de.typology.tools.IOHelper;
+
+public class Request extends AbstractRequest {
 
 	// PROPERTIES
 
@@ -22,13 +27,13 @@ public class Request {
 	private final HttpServletResponse responseObj;
 	private HttpSession session;
 
-	public int function;
+	private int function;
 
 	// Primary keys of db tables are stored in session.
 	// Everything else gets queried on runtime
-	public String developer_key;
-	public int ulfnr = -1;
-	public String sid;
+	private String developer_key;
+	private int ulfnr = -1;
+	private String sid;
 
 	// CONSTRUCTOR
 
@@ -47,117 +52,157 @@ public class Request {
 		getSession();
 	}
 
-	// GETTERS
+	// METHODS
 
-	/**
-	 * Get http request object
-	 * 
-	 * @return the http request object
-	 */
-	public final HttpServletRequest getRequestObj() {
-		return this.requestObj;
-	}
+	// Class getter/setter
 
-	/**
-	 * Get http response object
-	 * 
-	 * @return the http response object
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getLang()
 	 */
-	public final HttpServletResponse getResponseObj() {
-		return this.responseObj;
-	}
-
-	/**
-	 * Get language
-	 * 
-	 * @return the language
-	 */
+	@Override
 	public final int getLang() {
 		return this.LANG;
 	}
 
-	// METHODS
-
-	// Class getter/setter
-	
-	public boolean setDeveloperKeyToSession(String developer_key){
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#setDeveloperKeyToSession(java.lang.String)
+	 */
+	@Override
+	public boolean setDeveloperKeyToSession(String developer_key) {
 		this.developer_key = developer_key;
 		return storeInSession("developer_key", developer_key);
 	}
 	
-	// Request
-	
-	/**
-	 * Get parameter from request object or null if key not existing
-	 * 
-	 * @param key
-	 *            Parameter key
-	 * @return parameter value or null
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getFunction()
 	 */
+	@Override
+	public int getFunction(){
+		return this.function;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#setFunction(int)
+	 */
+	@Override
+	public void setFunction(int function){
+		this.function = function;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getUlfnr()
+	 */
+	@Override
+	public int getUlfnr(){
+		return this.ulfnr;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getDeveloperKey()
+	 */
+	@Override
+	public String getDeveloperKey(){
+		return this.developer_key;
+	}
+
+	// Request/Response
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getRequestParameter(java.lang.String)
+	 */
+	@Override
 	public String getRequestParameter(String key) {
 		return this.requestObj.getParameter(key);
 	}
-	
-	// Session creation/destruction
-	
-	/**
-	 * Get current session object. You have to load session first using getSession()
-	 * 
-	 * @return current HttpSession
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#makeResponse(de.typology.requests.interfaces.svr.DataObjectSvr)
 	 */
-	public HttpSession getSessionObject(){
-		return this.session;
+	@Override
+	public void makeResponse(DataObjectSvr d) {
+		String data = ThreadContext.jsonHandler.toJson(d);
+		// TODO set header?
+		try {
+			PrintWriter out = responseObj.getWriter();
+			out.write(data);
+			out.flush();
+			out.close();
+		} catch (IOException e) {
+			IOHelper.logErrorExceptionContext(e);
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#makeErrorResponse(int, java.lang.String)
+	 */
+	@Override
+	public void makeErrorResponse(int status, String msg) {
+		setResponseStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+		makeResponse(new DataObjectSvr(status, msg));
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#setResponseStatus(int)
+	 */
+	@Override
+	public void setResponseStatus(int code){
+		this.responseObj.setStatus(code);
 	}
 
-	/**
-	 * Get session for current request and store in class.
-	 * If no session is existing, session is null afterwards.
-	 * If session is available, also sessionid will be loaded into class.
-	 * 
-	 * Read session using getSessionObject()
+	// Session creation/destruction
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#isSessionLoaded()
 	 */
+	@Override
+	public boolean isSessionLoaded() {
+		return (this.session != null);
+	}
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getSession()
+	 */
+	@Override
 	public void getSession() {
 		this.session = this.requestObj.getSession(true);
-		if(this.session != null){
+		if (this.session != null) {
 			this.sid = this.session.getId();
 		}
 	}
-	
-	/**
-	 * Create session for current request and store in class.
-	 * If a session is already existing, it will be invalidated.
-	 * After that, the new sessionid is loaded into class.
-	 * 
-	 * Read session using getSessionObject()
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#createSession()
 	 */
+	@Override
 	public void createSession() throws Exception {
-		if(this.session != null){
+		if (this.session != null) {
 			session.invalidate();
 		}
 		this.session = this.requestObj.getSession();
-		if(this.session == null){
+		if (this.session == null) {
 			throw new Exception("Couldn't create session!");
 		}
-		this.sid = this.session.getId();		
-	}	
-	
-	/**
-	 * Invalidate current session
+		this.sid = this.session.getId();
+	}
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#destroySession()
 	 */
-	public void destroySession(){
-		if(this.session != null){
+	@Override
+	public void destroySession() {
+		if (this.session != null) {
 			this.session.invalidate();
 			this.sid = null;
 		}
 	}
-	
+
 	// Session loading
-		
-	/**
-	 * Load values of session to class.
-	 * 
-	 * @return true if loaded data is sufficient for run
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#loadSession()
 	 */
+	@Override
 	public boolean loadSession() {
 		if (this.session != null) {
 			this.ulfnr = getSessionValueAsInteger("ulfnr", -1);
@@ -168,29 +213,22 @@ public class Request {
 			return true;
 		}
 		return false;
-	}	
-	
+	}
 
 	// Session get/store
-		
-	/**
-	 * Get Session id for current session or null if not loaded
-	 * 
-	 * @return sessionid or null
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getSessionId()
 	 */
-	public String getSessionId(){
+	@Override
+	public String getSessionId() {
 		return this.sid;
-	}	
-	
-	/**
-	 * Store a value in the current session
-	 * 
-	 * @param key
-	 *            Key for lookup
-	 * @param obj
-	 *            Object to store
-	 * @return false if session is null, true otherwise
+	}
+
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#storeInSession(java.lang.String, java.lang.Object)
 	 */
+	@Override
 	public boolean storeInSession(String key, Object obj) {
 		if (this.session != null) {
 			this.session.setAttribute(key, obj);
@@ -199,13 +237,10 @@ public class Request {
 		return false;
 	}
 
-	/**
-	 * Lookup a value stored in the current session
-	 * 
-	 * @param key
-	 *            Key for lookup
-	 * @return value for key or null if session or key not found
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getSessionValue(java.lang.String)
 	 */
+	@Override
 	public Object getSessionValue(String key) {
 		if (this.session != null) {
 			return this.session.getAttribute(key);
@@ -213,28 +248,18 @@ public class Request {
 		return null;
 	}
 
-	/**
-	 * Lookup a string value stored in the current session
-	 * 
-	 * @param key
-	 *            Key for lookup
-	 * @return value for key or null if session or key not found
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getSessionValueAsString(java.lang.String)
 	 */
+	@Override
 	public String getSessionValueAsString(String key) {
 		return (String) getSessionValue(key);
 	}
 
-	/**
-	 * Lookup an integer value stored in the current session. If it wasn't
-	 * successful (key not found or cast failure), the default value will be
-	 * returned
-	 * 
-	 * @param key
-	 *            Key for lookup
-	 * @param _default
-	 *            Default return value
-	 * @return value for key or default
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#getSessionValueAsInteger(java.lang.String, int)
 	 */
+	@Override
 	public Integer getSessionValueAsInteger(String key, int _default) {
 		Object o = getSessionValue(key);
 		if (o == null) {
@@ -246,6 +271,5 @@ public class Request {
 			return _default;
 		}
 	}
-	
 
 }

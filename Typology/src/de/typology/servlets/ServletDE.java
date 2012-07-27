@@ -40,7 +40,7 @@ import de.typology.db.layer.DBLayer;
 import de.typology.db.layer.PrimitiveLayer;
 import de.typology.db.persistence.DBConnection;
 import de.typology.db.persistence.IDBConnection;
-import de.typology.requests.IRequestProcessor;
+import de.typology.requests.IRequest;
 import de.typology.requests.Request;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.IOHelper;
@@ -89,8 +89,14 @@ public class ServletDE extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		IRequestProcessor r = new Request(LN_DE, request, response);
-		r.execute();
+		IRequest requestObject;
+		try {
+			requestObject = new Request(LN_DE, request, response);
+		} catch (Exception e) {
+			IOHelper.logErrorException(e);
+			return;
+		}
+		ThreadContext.getRequestProcessor().processRequest(requestObject);
 	}
 
 }

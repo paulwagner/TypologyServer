@@ -9,7 +9,7 @@ package de.typology.retrieval;
 import java.util.HashMap;
 
 import de.typology.db.layer.PrimitiveLayer;
-import de.typology.requests.IRequestProcessor;
+import de.typology.requests.IRequest;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 
@@ -17,7 +17,7 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 
 	// PROPERTIES
 	
-	private IRequestProcessor requestObj;
+	private IRequest requestObj;
 	private PrimitiveLayer db;
 	private boolean interrupted = false;
 	
@@ -28,7 +28,7 @@ public class PrimitiveRetrieval implements IRetrieval, Runnable {
 	
 	// CONSTRUCTORS
 	
-	public PrimitiveRetrieval(IRequestProcessor requestObj, int lang){
+	public PrimitiveRetrieval(IRequest requestObj, int lang){
 		this.requestObj = requestObj;
 		this.lang = lang;
 	}

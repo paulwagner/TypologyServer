@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 
 import de.typology.db.layer.IDBLayer;
 import de.typology.db.persistence.IDBConnection;
+import de.typology.requests.IRequestProcessor;
+import de.typology.requests.RequestProcessor;
 
 /**
  * Context class, provides static access to threaded classes. In order to use
@@ -28,6 +30,11 @@ public class ThreadContext {
 	private static final IDBLayer[] dbLayers = new IDBLayer[LN_MAX + 1];
 	private static final IDBLayer[] primitiveLayers = new IDBLayer[LN_MAX + 1];
 
+	/**
+	 * Request processor object.
+	 */
+	private static final IRequestProcessor requestProcessor = new RequestProcessor();
+	
 	/**
 	 * Global jsonHandler.
 	 * 
@@ -155,6 +162,15 @@ public class ThreadContext {
 		if(servletContext == null){
 			servletContext = sc;
 		}	
+	}
+	
+	/**
+	 * Get Request Processor
+	 * 
+	 * @return the loaded request processor
+	 */
+	public static IRequestProcessor getRequestProcessor(){
+		return requestProcessor;
 	}
 
 }
