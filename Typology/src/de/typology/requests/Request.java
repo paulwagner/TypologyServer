@@ -38,7 +38,7 @@ import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
 
-public class Request implements IRequest {
+public class Request implements IRequestProcessor {
 
 	// PROPERTIES
 
@@ -101,7 +101,7 @@ public class Request implements IRequest {
 	/**
 	 * Main execute method which triggers loaded request.
 	 * 
-	 * @see de.typology.requests.IRequest#execute()
+	 * @see de.typology.requests.IRequestProcessor#execute()
 	 */
 	@Override
 	public void execute() {
@@ -223,7 +223,7 @@ public class Request implements IRequest {
 	/**
 	 * Perform response from retrieval thread
 	 * 
-	 * @see de.typology.requests.IRequest#doRetrievalCallback(java.util.HashMap,
+	 * @see de.typology.requests.IRequestProcessor#doRetrievalCallback(java.util.HashMap,
 	 * java.util.HashMap, java.util.HashMap, java.util.HashMap)
 	 */
 	@Override
@@ -244,7 +244,7 @@ public class Request implements IRequest {
 	 * Perform response from primitive retrieval thread
 	 * 
 	 * @see
-	 * de.typology.requests.IRequest#doPrimitiveRetrievalCallback(java.util.
+	 * de.typology.requests.IRequestProcessor#doPrimitiveRetrievalCallback(java.util.
 	 * HashMap)
 	 */
 	@Override

@@ -7,7 +7,7 @@ package de.typology.requests;
 
 import java.util.HashMap;
 
-public interface IRequest {
+public interface IRequestProcessor {
 
 	/**
 	 * Execute request.
