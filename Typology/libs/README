@@ -8,6 +8,8 @@ Libraries needed to run TypologyServer:
   in TypologyServer config file.
   See also: http://docs.neo4j.org/chunked/milestone/deployment-upgrading.html
   
+- Joda datetime library (http://sourceforge.net/projects/joda-time/files/latest/download?source=files)
+  
 Libraries needed to run JUnit tests or test databases:
 
   - Neo4j Test Suite
