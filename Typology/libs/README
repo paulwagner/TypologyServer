@@ -1,0 +1,19 @@
+Libraries needed to run TypologyServer:
+
+- Google GSON (http://code.google.com/p/google-gson/downloads/list)
+
+- Neo4j Community Version >= 1.5 (http://neo4j.org/download/) 
+  Notice that Neo4J supports automatic upgrade from 1.6 to 1.7 (just change libraries).
+  From 1.4 to 1.5 and 1.5 to 1.6 you'll have to explicitly allow upgrade using ALLOW_UPGRADE flag
+  in TypologyServer config file.
+  See also: http://docs.neo4j.org/chunked/milestone/deployment-upgrading.html
+  
+- Joda datetime library (http://sourceforge.net/projects/joda-time/files/latest/download?source=files)
+  
+Libraries needed to run JUnit tests or test databases:
+
+  - Neo4j Test Suite
+    You can get "tests.jar" from here and put it into your build path:
+    http://search.maven.org/#search|ga|1|g%3A%22org.neo4j%22%20AND%20a%3A%22neo4j-kernel%22  
+
+   - PowerMock http://code.google.com/p/powermock/downloads/list

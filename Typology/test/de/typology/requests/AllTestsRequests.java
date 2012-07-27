@@ -1,11 +1,11 @@
-package de.typology.tools;
+package de.typology.requests;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ SBVEntryTest.class, ConfigHelperTest.class })
-public class AllTestsTools {
+@SuiteClasses({ RequestClassTest.class, RequestToolsTest.class })
+public class AllTestsRequests {
 
 }

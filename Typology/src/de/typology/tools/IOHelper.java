@@ -19,17 +19,31 @@ import java.util.Date;
 
 import javax.servlet.ServletContext;
 
+import de.typology.threads.ThreadContext;
+
 public class IOHelper {
-	private static BufferedWriter logFile = openAppendFile(System
-			.getProperty("catalina.base")
-			+ System.getProperty("file.separator")
-			+ "logs"
-			+ System.getProperty("file.separator") + "logfile.log");
-	private static BufferedWriter errorLogFile = openAppendFile(System
-			.getProperty("catalina.base")
-			+ System.getProperty("file.separator")
-			+ "logs"
-			+ System.getProperty("file.separator") + "error.log");
+	private static BufferedWriter logFile = null;
+	private static BufferedWriter errorLogFile = null;
+
+	/**
+	 * method that initializes logfile in tomcat directory
+	 */
+	public static void initializeTomcatLog() {
+		initializeLog(System.getProperty("catalina.base")
+				+ System.getProperty("file.separator") + "logs"
+				+ System.getProperty("file.separator"));
+	}
+
+	/**
+	 * method that initializes logfiles in specified path.
+	 * 
+	 * @param path
+	 *            to create log file in with trailing (back)slash!
+	 */
+	public static void initializeLog(String path) {
+		logFile = openAppendFile(path + "logfile.log");
+		errorLogFile = openAppendFile(path + "error.log");
+	}
 
 	/**
 	 * faster access to a buffered reader
@@ -104,7 +118,8 @@ public class IOHelper {
 	 * function for logging an error to error log (and also to standard log with
 	 * special marking).
 	 * 
-	 * @param out Manual error message
+	 * @param out
+	 *            Manual error message
 	 */
 	public static void logError(String out) {
 		log("!!!!!" + out);
@@ -116,17 +131,19 @@ public class IOHelper {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * function for logging an exception to error log (and also to standard log with
-	 * special marking).
+	 * function for logging an exception to error log (and also to standard log
+	 * with special marking).
 	 * 
-	 * @param myMsg Manual error message.
-	 * @param out Exception to log
+	 * @param myMsg
+	 *            Manual error message.
+	 * @param out
+	 *            Exception to log
 	 */
 	public static void logErrorException(String myMsg, Throwable out) {
 		String s;
-		if(myMsg.isEmpty()){
+		if (myMsg.isEmpty()) {
 			myMsg = ((Throwable) out).getMessage();
 		}
 		s = "EXCEPTION OCCURED: " + myMsg + "\n";
@@ -139,9 +156,9 @@ public class IOHelper {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}	
-	
-	public static void logErrorException(Throwable out){
+	}
+
+	public static void logErrorException(Throwable out) {
 		logErrorException(out.getMessage(), out);
 	}
 
@@ -160,10 +177,9 @@ public class IOHelper {
 	 * 
 	 * @param out
 	 *            String to log in context
-	 * @param context
-	 *            ServletContext
 	 */
-	public static void log(String out, ServletContext context) {
+	public static void logContext(String out) {
+		ServletContext context = ThreadContext.getServletContext();
 		if (context != null) {
 			context.log(out);
 		}
@@ -177,10 +193,9 @@ public class IOHelper {
 	 * 
 	 * @param out
 	 *            Manual error message
-	 * @param context
-	 *            The servlet context
 	 */
-	public static void logError(String out, ServletContext context) {
+	public static void logErrorContext(String out) {
+		ServletContext context = ThreadContext.getServletContext();
 		if (context != null) {
 			context.log(out);
 		}
@@ -193,15 +208,12 @@ public class IOHelper {
 	 * or server (so you have it together with all tomcat messages).
 	 * 
 	 * @param myMsg
-	 *            Manual error message.
-	 *            will be used
+	 *            Manual error message. will be used
 	 * @param out
 	 *            Exception to log
-	 * @param context
-	 *            ServletContext
 	 */
-	public static void logErrorException(String myMsg, Throwable out,
-			ServletContext context) {
+	public static void logErrorExceptionContext(String myMsg, Throwable out) {
+		ServletContext context = ThreadContext.getServletContext();
 		if (myMsg.isEmpty()) {
 			myMsg = out.getMessage();
 		}
@@ -210,8 +222,8 @@ public class IOHelper {
 		}
 		logErrorException(myMsg, out);
 	}
-	
-	public static void logErrorException(Throwable out, ServletContext context){
-		logErrorException(out.getMessage(), out, context);
+
+	public static void logErrorExceptionContext(Throwable out) {
+		logErrorExceptionContext(out.getMessage(), out);
 	}
 }

@@ -24,27 +24,32 @@ public class SBVEntry implements Comparable<SBVEntry> {
 
 	@Override
 	public int compareTo(SBVEntry o) {
+		int r = 0;
 		if(o.c.equals(Integer.class)){
 			// compare obj to integer
-			return ((Integer) o.value).compareTo((Integer) this.value);
+			r = ((Integer) o.value).compareTo((Integer) this.value);
 		}		
 		if(o.c.equals(Long.class)){
 			// compare obj to long
-			return ((Long) o.value).compareTo((Long) this.value);
+			r = ((Long) o.value).compareTo((Long) this.value);
 		}		
 		if(o.c.equals(Double.class)){
 			// compare obj to double
-			return ((Double) o.value).compareTo((Double) this.value);
+			r = ((Double) o.value).compareTo((Double) this.value);
 		}		
 		if(o.c.equals(Float.class)){
 			// compare obj to double
-			return ((Float) o.value).compareTo((Float) this.value);
+			r = ((Float) o.value).compareTo((Float) this.value);
 		}		
 		if(o.c.equals(String.class)){
 			// compare obj to double
-			return ((String) o.value).compareTo((String) this.value);
+			r = ((String) o.value).compareTo((String) this.value);
 		}		
-		return 0;
+		if(r == 0){
+			return this.key.compareTo(o.key);
+		} else {
+			return r;
+		}		
 	}	
 	
 }

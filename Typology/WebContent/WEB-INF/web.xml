@@ -27,4 +27,7 @@
     <param-name>configfile</param-name>
     <param-value>E:\paul\Dokumente\MyDocuments\Eclipse Workspaces\Current\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\conf\configfile.ini</param-value>
   </context-param>
+  <session-config>
+    <session-timeout>60</session-timeout>
+  </session-config>  
 </web-app>
