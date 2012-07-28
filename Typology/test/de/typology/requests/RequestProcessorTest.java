@@ -7,6 +7,7 @@
  */
 package de.typology.requests;
 
+import static de.typology.tools.Resources.FN_GETPRIMITIVE;
 import static de.typology.tools.Resources.FN_INITIATESESSION;
 import static de.typology.tools.Resources.SC_ERR;
 import static de.typology.tools.Resources.SC_ERR_INSUFFICIENT_REQUEST_DATA;
@@ -15,7 +16,9 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.powermock.api.easymock.PowerMock.expectLastCall;
 import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verify;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,8 +29,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.gson.Gson;
 
+import de.typology.requests.interfaces.client.GetPrimitiveObjectClient;
 import de.typology.requests.interfaces.client.InitiateSessionObjectClient;
 import de.typology.requests.interfaces.svr.InitiateSessionObjectSvr;
+import de.typology.retrieval.IRetrieval;
+import de.typology.retrieval.IRetrievalFactory;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({})
@@ -36,6 +42,7 @@ public class RequestProcessorTest {
 	private static RequestProcessor processor;
 	// Request Interfaces to mock
 	private static IRequest request;
+	private static IRetrievalFactory retrievalFactory;
 
 	private static Gson jsonHandler = new Gson();
 	
@@ -45,8 +52,9 @@ public class RequestProcessorTest {
 	public void setUp() throws Exception {
 		// Create mocking interfaces
 		request = PowerMock.createMock(IRequest.class);
+		retrievalFactory = PowerMock.createMock(IRetrievalFactory.class);
 		// Create testing class
-		processor = new RequestProcessor();
+		processor = new RequestProcessor(retrievalFactory);
 	}
 
 	// TESTS
@@ -236,7 +244,7 @@ public class RequestProcessorTest {
 		// Just for expected function calls
 		expect(request.getRequestParameter("do")).andReturn("initiatesession");
 		request.setFunction(FN_INITIATESESSION);
-		// Return initiatesession function
+		// Return initiate function
 		expect(request.getFunction()).andReturn(FN_INITIATESESSION);
 		// Return request parameter
 		InitiateSessionObjectClient data = new InitiateSessionObjectClient();
@@ -285,4 +293,63 @@ public class RequestProcessorTest {
 		processor.processRequest(request);
 		verify(request);			
 	}	
+	
+	/**
+	 * If getPrimitive is called without offset, makeError is expected
+	 */
+	@Test
+	public void processRequest_getPrimitiveWithoutOffset_SCERRINSUFFICIENTREQUESTDATA() {
+		// Prepare request for mocking
+		request.getSession();
+		// Just for expected function calls
+		expect(request.getRequestParameter("do")).andReturn("getprimitive");
+		request.setFunction(FN_GETPRIMITIVE);
+		// Return getprimitive function
+		expect(request.getFunction()).andReturn(FN_GETPRIMITIVE);
+		expect(request.isSessionLoaded()).andReturn(true);
+		expect(request.loadSession()).andReturn(true);
+		// Return request parameter
+		GetPrimitiveObjectClient data = new GetPrimitiveObjectClient();
+		data.offset = null;
+		expect(request.getRequestParameter("data")).andReturn(jsonHandler.toJson(data));
+		request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
+				"Insufficient request data. We need at least the developer key. Refer to wiki.typology.de for the API");		
+		
+		// Run mock
+		replay(request);
+		processor.processRequest(request);
+		verify(request);	
+	}
+	
+	/**
+	 * If getPrimitive is called correctly, primitiveRetrieval.run() should be called
+	 */
+	@Test
+	public void processRequest_getPrimitive_callPrimitiveRetrieval(){
+		// Prepare request for mocking
+		request.getSession();
+		// Just for expected function calls
+		expect(request.getRequestParameter("do")).andReturn("getprimitive");
+		request.setFunction(FN_GETPRIMITIVE);
+		// Return getprimitive function
+		expect(request.getFunction()).andReturn(FN_GETPRIMITIVE);
+		expect(request.isSessionLoaded()).andReturn(true);
+		expect(request.loadSession()).andReturn(true);
+		// Return request parameter
+		GetPrimitiveObjectClient data = new GetPrimitiveObjectClient();
+		data.offset = "da";
+		expect(request.getRequestParameter("data")).andReturn(jsonHandler.toJson(data));
+		// Prepare retrieval for mocking
+		IRetrieval ret = PowerMock.createMock(IRetrieval.class);
+		ret.setSentence(null, "da");
+		ret.run();
+		// Prepare requestprocessor for mocking
+		expect(retrievalFactory.getInstanceOfPrimitiveRetrieval(request)).andReturn(ret);
+		
+		// Run mock
+		replayAll();
+		processor.processRequest(request);
+		verifyAll();	
+	}
+	
 }

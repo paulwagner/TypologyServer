@@ -4,9 +4,9 @@ import de.typology.requests.IRequest;
 
 public interface IRetrievalFactory {
 
-	public abstract PrimitiveRetrieval getInstanceOfPrimitiveRetrieval(
+	public abstract IRetrieval getInstanceOfPrimitiveRetrieval(
 			IRequest request);
 
-	public abstract Retrieval getInstanceOfRetrieval(IRequest request);
+	public abstract IRetrieval getInstanceOfRetrieval(IRequest request);
 
 }

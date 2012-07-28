@@ -15,6 +15,7 @@ import de.typology.requests.interfaces.client.GetPrimitiveObjectClient;
 import de.typology.requests.interfaces.client.InitiateSessionObjectClient;
 import de.typology.requests.interfaces.svr.InitiateSessionObjectSvr;
 import de.typology.retrieval.IRetrieval;
+import de.typology.retrieval.IRetrievalFactory;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
@@ -25,13 +26,13 @@ public class RequestProcessor implements IRequestProcessor {
 	
 	private final Gson jsonHandler = ThreadContext.jsonHandler;
 	
-	//private final IRetrievalFactory retrievalFactory;
+	private final IRetrievalFactory retrievalFactory;
 	
 	// CONSTRUCTOR
 	
-	//public RequestProcessor(IRetrievalFactory factory){
-	//	this.retrievalFactory = factory;
-	//}
+	public RequestProcessor(IRetrievalFactory factory){
+		this.retrievalFactory = factory;
+	}
 	
 	// FUNCTIONS
 	
@@ -96,16 +97,16 @@ public class RequestProcessor implements IRequestProcessor {
 
 		GetPrimitiveObjectClient data = jsonHandler.fromJson(s,
 				GetPrimitiveObjectClient.class);
-		if (data.offset == null) {
-			request.makeErrorResponse(SC_ERR,
-					"Unable to parse data parameter. Offset is not avaiable. Refer to wiki.typology.de for the API");
+		if (data == null || data.offset == null) {
+			request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
+					"Insufficient request data. We need at least the developer key. Refer to wiki.typology.de for the API");
 			return;
 		}
 
 		// TODO start new threads for logging, we dont need db maintenance with
 		// primitive retrieval
 
-		IRetrieval ret = ThreadContext.getRetrievalFactory().getInstanceOfPrimitiveRetrieval(request);
+		IRetrieval ret = retrievalFactory.getInstanceOfPrimitiveRetrieval(request);
 		ret.setSentence(null, data.offset);
 
 		startRetrievalThread(request, ret);
