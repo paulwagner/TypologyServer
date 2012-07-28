@@ -12,14 +12,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
 
-public class MySQLConnection {
+public class MySQLConnection implements IRDBConnection {
 
 	// PROPERTIES
 
 	private String driver;
-	private String path;
+	private String host;
+	private int port;
+	private String database;
 	private String user;
 	private String pass;
 
@@ -29,24 +32,17 @@ public class MySQLConnection {
 
 	/**
 	 * Constructor. When specified driver is not found, ClassNotFoundException
-	 * will be thrown.
+	 * will be thrown. Config values will be loaded from ConfigHelper
 	 * 
-	 * @param driver
-	 *            Driver for JDBC
-	 * @param path
-	 *            Path for MySQL
-	 * @param user
-	 *            Username for MySQL
-	 * @param pass
-	 *            Password for MySQL
 	 * @throws ClassNotFoundException
 	 */
-	public MySQLConnection(String path, String user, String pass)
-			throws ClassNotFoundException {
+	public MySQLConnection() throws ClassNotFoundException {
 		this.driver = "com.mysql.jdbc.Driver";
-		this.pass = pass;
-		this.path = path;
-		this.user = user;
+		this.host = ConfigHelper.getMYSQL_HOST();
+		this.port = 3306;
+		this.pass = ConfigHelper.getMYSQL_PASS();
+		this.database = ConfigHelper.getMYSQL_DB_MAIN();
+		this.user = ConfigHelper.getMYSQL_USER();
 
 		try {
 			Class.forName(this.driver);
@@ -60,15 +56,15 @@ public class MySQLConnection {
 
 	// METHODS
 
-	/**
-	 * Opens new connection.
-	 * 
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#openConnection()
 	 */
+	@Override
 	public void openConnection() throws SQLException {
 		try {
-			this.connection = DriverManager.getConnection(this.path, this.user,
-					this.pass);
+			this.connection = DriverManager.getConnection("jdbc:mysql://"
+					+ this.host + ":" + this.port + "/" + this.database + "?"
+					+ "user=" + this.user + "&password=" + this.pass);
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
 					"ERROR: (MySQLConnection.openConnection()) Unable to connect to mysql database. Deamon running and config ok?",
@@ -78,9 +74,10 @@ public class MySQLConnection {
 
 	}
 
-	/**
-	 * Close connection.
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#closeConnection()
 	 */
+	@Override
 	public void closeConnection() {
 		if (connection == null) {
 			return;
@@ -94,14 +91,10 @@ public class MySQLConnection {
 		}
 	}
 
-	/**
-	 * Executes a given Query and returns result set. This method only supports
-	 * SELECT statements!
-	 * 
-	 * @param query
-	 * @return resultset
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executeQuery(java.lang.String)
 	 */
+	@Override
 	public ResultSet executeQuery(String query) throws SQLException {
 		if (connection == null) {
 			IOHelper.logErrorContext("ERROR: (MySQLConnection.executeQuery()) Connection is not open! Unable to execute Query");
@@ -122,14 +115,10 @@ public class MySQLConnection {
 		return result;
 	}
 
-	/**
-	 * Executes a given Updatequery and returns number of affected rows. This
-	 * method only supports DELETE, UPDATE and INSERT statements!
-	 * 
-	 * @param query
-	 * @return number of affected rows
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executeUpdateQuery(java.lang.String)
 	 */
+	@Override
 	public int executeUpdateQuery(String query) throws SQLException {
 		if (connection == null) {
 			IOHelper.logErrorContext("ERROR: (MySQLConnection.executeQuery()) Connection is not open! Unable to execute Update");
@@ -150,16 +139,10 @@ public class MySQLConnection {
 		return count;
 	}
 
-	/**
-	 * Executes a simple lookup.
-	 * 
-	 * @param fields
-	 * @param table
-	 * @param where
-	 * @param order_by
-	 * @return resultset
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executeLookup(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public ResultSet executeLookup(String fields, String table, String where,
 			String order_by) throws SQLException {
 		if (order_by != "") {
@@ -171,43 +154,28 @@ public class MySQLConnection {
 		}
 	}
 
-	/**
-	 * Execute a delete.
-	 * 
-	 * @param table
-	 * @param where
-	 * @return number of affected rows
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executeDelete(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public int executeDelete(String table, String where) throws SQLException {
 		return executeUpdateQuery("DELETE FROM " + table + " WHERE " + where);
 	}
 
-	/**
-	 * Execute an update.
-	 * 
-	 * @param fields
-	 * @param table
-	 * @param values
-	 * @param where
-	 * @return number of affected rows
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executeUpdate(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public int executeUpdate(String fields, String table, String values,
 			String where) throws SQLException {
 		return executeUpdateQuery("UPDATE " + table + " SET (" + fields
 				+ ") VALUES (" + values + ") WHERE " + where);
 	}
 
-	/**
-	 * Executes an insert.
-	 * 
-	 * @param fields
-	 * @param table
-	 * @param values
-	 * @return number of affected rows
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executeInsert(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public int executeInsert(String fields, String table, String values)
 			throws SQLException {
 		return executeUpdateQuery("INSERT INTO " + table + "(" + fields

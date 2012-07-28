@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 
 import de.typology.db.layer.IDBLayer;
 import de.typology.db.persistence.IDBConnection;
+import de.typology.rdb.persistence.IRDBConnection;
 import de.typology.requests.IRequestProcessor;
 import de.typology.requests.RequestProcessor;
 import de.typology.retrieval.RetrievalFactory;
@@ -28,6 +29,11 @@ public class ThreadContext {
 	private static final IDBConnection[] dbs = new IDBConnection[LN_MAX + 1];
 	private static final IDBLayer[] dbLayers = new IDBLayer[LN_MAX + 1];
 	private static final IDBLayer[] primitiveLayers = new IDBLayer[LN_MAX + 1];
+	
+	/**
+	 * Global rdb object. Default is mysql.
+	 */
+	private static IRDBConnection rdb = null;
 
 	/**
 	 * Global jsonHandler.
@@ -67,6 +73,7 @@ public class ThreadContext {
 	 *            the db layer
 	 * @param lang
 	 *            the used language
+	 * @return true if store was successful            
 	 */
 	public static boolean setDBLayer(IDBLayer db, final int LANG) {
 		if (LANG > LN_MAX) {
@@ -80,6 +87,8 @@ public class ThreadContext {
 	}
 
 	/**
+	 * @param lang language
+	 * 
 	 * @return db the db layer
 	 */
 	public static IDBLayer getDbLayer(final int LANG) {
@@ -94,6 +103,7 @@ public class ThreadContext {
 	 *            the primitive db layer
 	 * @param lang
 	 *            the used language
+	 * @return true if store was successful            
 	 */
 	public static boolean setPrimitiveLayer(IDBLayer db, final int LANG) {
 		if (LANG > LN_MAX) {
@@ -107,6 +117,8 @@ public class ThreadContext {
 	}
 
 	/**
+	 * @param lang language
+	 * 
 	 * @return db the primitive layer
 	 */
 	public static IDBLayer getPrimitiveLayer(final int LANG) {
@@ -118,9 +130,10 @@ public class ThreadContext {
 
 	/**
 	 * @param db
-	 *            the primitive db layer
+	 *            the db
 	 * @param lang
 	 *            the used language
+	 * @return true if store was successful            
 	 */
 	public static boolean setDB(IDBConnection db, final int LANG) {
 		if (LANG > LN_MAX) {
@@ -134,7 +147,9 @@ public class ThreadContext {
 	}
 
 	/**
-	 * @return db the primitive layer
+	 * @param lang language
+	 * 
+	 * @return db the db
 	 */
 	public static IDBConnection getDB(final int LANG) {
 		if (LANG > LN_MAX) {
@@ -143,6 +158,25 @@ public class ThreadContext {
 		return ThreadContext.dbs[LANG];
 	}
 	
+	/**
+	 * @param db the rdb
+	 * 
+	 * @return true if store was successful            
+	 */
+	public static boolean setRDB(IRDBConnection db){
+		if(ThreadContext.rdb == null){
+			ThreadContext.rdb = db;
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @return the rdb
+	 */
+	public static IRDBConnection getRDB(){
+		return ThreadContext.rdb;
+	}
 	
 	/**
 	 * Get ServletContext
