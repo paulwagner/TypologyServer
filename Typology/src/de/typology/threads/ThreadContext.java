@@ -10,6 +10,8 @@ import de.typology.db.layer.IDBLayer;
 import de.typology.db.persistence.IDBConnection;
 import de.typology.requests.IRequestProcessor;
 import de.typology.requests.RequestProcessor;
+import de.typology.retrieval.IRetrievalFactory;
+import de.typology.retrieval.RetrievalFactory;
 
 /**
  * Context class, provides static access to threaded classes. In order to use
@@ -56,6 +58,11 @@ public class ThreadContext {
 	 * IMPORTANT: Declaration has to be *after* jsonHandler, because requestProcessor stores that reference!
 	 */
 	private static final IRequestProcessor requestProcessor = new RequestProcessor();
+	
+	/**
+	 * RetrievalFactory
+	 */
+	private static final IRetrievalFactory retrievalFactory = new RetrievalFactory();
 	
 	
 	// GETTERS AND SETTERS
@@ -173,6 +180,15 @@ public class ThreadContext {
 	 */
 	public static IRequestProcessor getRequestProcessor(){
 		return requestProcessor;
+	}
+	
+	/**
+	 * Get Retrieval factory
+	 * 
+	 * @return the retrieval factory
+	 */
+	public static IRetrievalFactory getRetrievalFactory(){
+		return retrievalFactory;
 	}
 
 }

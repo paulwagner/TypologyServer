@@ -15,7 +15,6 @@ import de.typology.requests.interfaces.client.GetPrimitiveObjectClient;
 import de.typology.requests.interfaces.client.InitiateSessionObjectClient;
 import de.typology.requests.interfaces.svr.InitiateSessionObjectSvr;
 import de.typology.retrieval.IRetrieval;
-import de.typology.retrieval.PrimitiveRetrieval;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
@@ -106,7 +105,7 @@ public class RequestProcessor implements IRequestProcessor {
 		// TODO start new threads for logging, we dont need db maintenance with
 		// primitive retrieval
 
-		IRetrieval ret = new PrimitiveRetrieval(request, request.getLang());
+		IRetrieval ret = ThreadContext.getRetrievalFactory().getInstanceOfPrimitiveRetrieval(request);
 		ret.setSentence(null, data.offset);
 
 		startRetrievalThread(request, ret);

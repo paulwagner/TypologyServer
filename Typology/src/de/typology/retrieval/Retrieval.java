@@ -10,9 +10,15 @@ package de.typology.retrieval;
 
 import java.util.HashMap;
 
+import de.typology.requests.IRequest;
+
 public class Retrieval implements IRetrieval {
 
 	private boolean interrupted = false;
+	
+	public Retrieval(IRequest request, int lang){
+		
+	}
 
 	@Override
 	public void doResponse() {

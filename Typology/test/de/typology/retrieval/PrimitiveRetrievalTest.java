@@ -1,5 +1,5 @@
 /**
- * Test case for Primitive Retrieval.
+ * Method test case for Primitive Retrieval.
  * 
  * @author Paul Wagner
  */
@@ -62,6 +62,7 @@ public class PrimitiveRetrievalTest {
 		retrieval = new PrimitiveRetrieval(request, LN_MAX);
 	}
 
+	
 	@Test
 	public void eval_doRetrievalHat_HatHatschi() {
 		// Prepare layer mock for testing
@@ -90,9 +91,6 @@ public class PrimitiveRetrievalTest {
 
 	@Test
 	public void eval_doRetrievalTe_Empty() {
-		// Instantiate test class
-		retrieval = new PrimitiveRetrieval(null, LN_MAX);
-		
 		// Prepare layer mock for testing
 		layer = PowerMock.createMock(PrimitiveLayer.class);
 		expect(layer.getNodeMap()).andReturn(map); // Prepare layer with our map
@@ -115,9 +113,6 @@ public class PrimitiveRetrievalTest {
 	
 	@Test
 	public void eval_doRetrievalnicht_nicht() {
-		// Instantiate test class
-		retrieval = new PrimitiveRetrieval(null, LN_MAX);
-		
 		// Prepare layer mock for testing
 		layer = PowerMock.createMock(PrimitiveLayer.class);
 		expect(layer.getNodeMap()).andReturn(map); // Prepare layer with our map
