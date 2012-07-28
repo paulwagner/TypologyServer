@@ -37,6 +37,7 @@ public final class Resources {
 	public static final int FN_STORETEXT = 6;
 	public static final int FN_STOREMETRICS = 7;
 	public static final int FN_GETMETRICS = 8;
+	public static final int FN_CLOSESESSION = 9;
 	
 
 	/**

@@ -43,6 +43,9 @@ public class RequestTools {
 		if(u_name.equals("STORETEXT")){
 			return FN_STORETEXT;			
 		}
+		if(u_name.equals("CLOSESESSION")){
+			return FN_CLOSESESSION;			
+		}
 		return -1;
 	}
 	
