@@ -31,11 +31,6 @@ public class ThreadContext {
 	private static final IDBLayer[] primitiveLayers = new IDBLayer[LN_MAX + 1];
 
 	/**
-	 * Request processor object.
-	 */
-	private static final IRequestProcessor requestProcessor = new RequestProcessor();
-	
-	/**
 	 * Global jsonHandler.
 	 * 
 	 * TODO: I used to instanciate a jsonHandler for every request, but it seems
@@ -54,7 +49,14 @@ public class ThreadContext {
 	 * 
 	 * In threads, the ServletContext is mainly used for logging.
 	 */
-	private static ServletContext servletContext = null; 
+	private static ServletContext servletContext = null;
+
+	/**
+	 * Request processor object.
+	 * IMPORTANT: Declaration has to be *after* jsonHandler, because requestProcessor stores that reference!
+	 */
+	private static final IRequestProcessor requestProcessor = new RequestProcessor();
+	
 	
 	// GETTERS AND SETTERS
 
