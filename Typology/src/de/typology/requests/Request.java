@@ -18,7 +18,7 @@ import de.typology.requests.interfaces.svr.DataObjectSvr;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.IOHelper;
 
-public class Request extends AbstractRequest {
+public class Request extends AbstractRequestCallback {
 
 	// PROPERTIES
 

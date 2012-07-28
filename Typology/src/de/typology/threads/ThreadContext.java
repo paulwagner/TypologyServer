@@ -14,9 +14,7 @@ import de.typology.retrieval.IRetrievalFactory;
 import de.typology.retrieval.RetrievalFactory;
 
 /**
- * Context class, provides static access to threaded classes. In order to use
- * connectors besides servlets (eg jWebSocket) we implement our own context, and
- * don't use the ServletContext
+ * Context class, provides static access to threaded classes.
  * 
  * @author Paul Wagner
  */
