@@ -16,7 +16,7 @@ import de.typology.requests.interfaces.svr.DataObjectSvr;
 import de.typology.requests.interfaces.svr.GetPrimitiveObjectSvr;
 import de.typology.tools.ConfigHelper;
 
-public abstract class AbstractRequest implements IRequest {
+public abstract class AbstractRequestCallback implements IRequest {
 	
 	public abstract boolean storeInSession(String key, Object obj);
 	public abstract void makeResponse(DataObjectSvr d);

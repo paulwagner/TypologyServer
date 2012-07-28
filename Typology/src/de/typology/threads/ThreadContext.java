@@ -10,11 +10,10 @@ import de.typology.db.layer.IDBLayer;
 import de.typology.db.persistence.IDBConnection;
 import de.typology.requests.IRequestProcessor;
 import de.typology.requests.RequestProcessor;
+import de.typology.retrieval.RetrievalFactory;
 
 /**
- * Context class, provides static access to threaded classes. In order to use
- * connectors besides servlets (eg jWebSocket) we implement our own context, and
- * don't use the ServletContext
+ * Context class, provides static access to threaded classes.
  * 
  * @author Paul Wagner
  */
@@ -55,7 +54,7 @@ public class ThreadContext {
 	 * Request processor object.
 	 * IMPORTANT: Declaration has to be *after* jsonHandler, because requestProcessor stores that reference!
 	 */
-	private static final IRequestProcessor requestProcessor = new RequestProcessor();
+	private static final IRequestProcessor requestProcessor = new RequestProcessor(new RetrievalFactory());
 	
 	
 	// GETTERS AND SETTERS
@@ -174,5 +173,5 @@ public class ThreadContext {
 	public static IRequestProcessor getRequestProcessor(){
 		return requestProcessor;
 	}
-
+	
 }
