@@ -52,10 +52,11 @@ public class RequestProcessor implements IRequestProcessor {
 			return;
 		}
 		request.setFunction(translateFunctionName(s));
-
+		int function = request.getFunction();
+		
 		// If we don't have a session and no initiatesession request, we don't
 		// want to do anything
-		if(request.getFunction() != FN_INITIATESESSION){
+		if(function != FN_INITIATESESSION){
 			if(!request.isSessionLoaded()){
 				request.makeErrorResponse(SC_ERR_NO_SESSION,
 						"You need to create a session first using method initiateSession()");
@@ -69,7 +70,7 @@ public class RequestProcessor implements IRequestProcessor {
 		}
 		
 		// Hop into requested function
-		switch (request.getFunction()) {
+		switch (function) {
 		case FN_GETPRIMITIVE:
 			getPrimitive(request);
 			return;
