@@ -4,22 +4,22 @@
  *
  * The following header information are neccessary to make the request work:
  * 
- *  POST http://localhost:8080/Typology/DE?do=initiatesession HTTP/1.1
- *	User-Agent: Fiddler
- *	Host: localhost:8080
- *	Content-Type: application/x-www-form-urlencoded; charset=UTF-8
- *
- *	data=%7Bdkey%3A%22developerkey%22%2C+uid%3A%22userid%22%2C+version%3A1.2%7D 
- *
- *	POST http://localhost:8080/Typology/DE?do=getprimitive HTTP/1.1
- *	User-Agent: Fiddler
- *	Host: localhost:8080
- *	Content-Length: 68
- *	Content-Type: application/x-www-form-urlencoded; charset=UTF-8
- *	Connection: keep-alive
- *	Cookie: JSESSIONID=570935F92B33E9137E13CC480A4C33DD
- *
- *	data=%7Boffset%3A%22dev%22%2C+uid%3A%22userid%22%2C+version%3A1.2%7D
+POST http://localhost:8080/Typology/DE?do=initiatesession HTTP/1.1
+User-Agent: Fiddler
+Host: localhost:8080
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+
+data=%7Bdkey%3A%22developerkey%22%2C+uid%3A%22userid%22%2C+version%3A1.2%7D 
+
+POST http://localhost:8080/Typology/DE?do=getprimitive HTTP/1.1
+User-Agent: Fiddler
+Host: localhost:8080
+Content-Length: 68
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Connection: keep-alive
+Cookie: JSESSIONID=570935F92B33E9137E13CC480A4C33DD
+
+data=%7Boffset%3A%22dev%22%2C+uid%3A%22userid%22%2C+version%3A1.2%7D
  *
  *
  * @author Paul Wagner
@@ -81,7 +81,7 @@ public class ServletDE extends HttpServlet {
 	}
 
 	/**
-	 * Handle new request (POST): Instanciate new Request and execute it.
+	 * Handle new request (POST): Instantiate new Request and execute it.
 	 * 
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
