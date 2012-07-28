@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 
 import de.typology.db.layer.IDBLayer;
 import de.typology.db.persistence.IDBConnection;
+import de.typology.requests.IRequestProcessor;
+import de.typology.requests.RequestProcessor;
 
 /**
  * Context class, provides static access to threaded classes. In order to use
@@ -47,7 +49,14 @@ public class ThreadContext {
 	 * 
 	 * In threads, the ServletContext is mainly used for logging.
 	 */
-	private static ServletContext servletContext = null; 
+	private static ServletContext servletContext = null;
+
+	/**
+	 * Request processor object.
+	 * IMPORTANT: Declaration has to be *after* jsonHandler, because requestProcessor stores that reference!
+	 */
+	private static final IRequestProcessor requestProcessor = new RequestProcessor();
+	
 	
 	// GETTERS AND SETTERS
 
@@ -155,6 +164,15 @@ public class ThreadContext {
 		if(servletContext == null){
 			servletContext = sc;
 		}	
+	}
+	
+	/**
+	 * Get Request Processor
+	 * 
+	 * @return the loaded request processor
+	 */
+	public static IRequestProcessor getRequestProcessor(){
+		return requestProcessor;
 	}
 
 }

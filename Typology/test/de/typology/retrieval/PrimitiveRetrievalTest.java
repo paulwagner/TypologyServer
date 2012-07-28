@@ -29,11 +29,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import de.typology.SetupHelperMethods;
 import de.typology.db.layer.PrimitiveLayer;
 import de.typology.requests.IRequest;
+import de.typology.requests.IRequestProcessor;
 import de.typology.retrieval.PrimitiveRetrieval;
 import de.typology.threads.ThreadContext;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ThreadContext.class, PrimitiveLayer.class, IRequest.class})
+@PrepareForTest({ThreadContext.class, PrimitiveLayer.class, IRequestProcessor.class})
 public class PrimitiveRetrievalTest {
 
 	private static PrimitiveRetrieval retrieval;

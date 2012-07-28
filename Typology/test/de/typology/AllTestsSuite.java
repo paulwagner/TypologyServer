@@ -1,5 +1,5 @@
 /**
- * Main test suite that starts test suite for every package
+ * Main method test suite that starts method tests for every package
  * 
  * @author Paul Wagner
  */
