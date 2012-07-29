@@ -73,6 +73,15 @@ public class Request extends AbstractRequestCallback {
 	}
 	
 	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#seUlfnrToSession(java.lang.Integer)
+	 */	
+	@Override
+	public boolean setUlfnrToSession(int ulfnr){
+		this.ulfnr = ulfnr;
+		return storeInSession("ulfnr", ulfnr);
+	}
+	
+	/* (non-Javadoc)
 	 * @see de.typology.requests.IRequest#getFunction()
 	 */
 	@Override

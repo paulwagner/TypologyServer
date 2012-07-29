@@ -20,6 +20,8 @@ public interface IRequest {
 	public abstract int getLang();
 
 	public abstract boolean setDeveloperKeyToSession(String developer_key);
+	
+	public abstract boolean setUlfnrToSession(int ulfnr);
 
 	public abstract int getFunction();
 

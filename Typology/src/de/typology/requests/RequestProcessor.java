@@ -137,15 +137,19 @@ public class RequestProcessor implements IRequestProcessor {
 		
 		try{			
 			request.createSession();
-			// TODO connect to mysql database through RDBSessionConnector and check if developer key is valid. For now every key is valid.
+			if(!ThreadContext.getMySQLSessionConnector().isValidDeveloperKey(data.dkey)){
+				request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
+						"Insufficient request data. Given developer key is invalid!");
+				return;				
+			}
 			request.setDeveloperKeyToSession(data.dkey);
 		
-			// TODO if we have an uid key we have to create or update the user with given userinfo and config (using RDBSessionConnector) and write to this.ulfnr
+			if(data.uid != null && !data.uid.isEmpty()){
+				int ulfnr = ThreadContext.getMySQLSessionConnector().getOrCreateUlfnr(data.dkey, data.uid);
+				request.setUlfnrToSession(ulfnr);
+			}
 			
-			// TODO now create session with developer link (optional with user link) using RDBSessionConnector
-		
 		} catch (Exception e){
-			// If there is an error, destroy session if existing or it will remain in db forever!
 			request.destroySession();
 			request.makeErrorResponse(SC_ERR, "Session creation failed! Nothing you can do here, please be patient until error is resolved.");
 			return;
