@@ -50,7 +50,7 @@ public class AppListener implements ServletContextListener {
 			try {
 				IRDBConnection rdb = new MySQLConnection();
 				rdb.openConnection();
-				ThreadContext.setRDB(rdb);
+				ThreadContext.initializeRDBConnectors(rdb);
 			} catch (ClassNotFoundException e) {
 				IOHelper.logErrorExceptionContext("ERROR: (AppListener.init()) Unable to load MySQL connector! Unable to start up...", e);
 				throw new NullPointerException("ERROR: (AppListener.init()) Unable to load MySQL connector! Unable to start up...");
@@ -71,7 +71,6 @@ public class AppListener implements ServletContextListener {
 	 */
 	public void contextDestroyed(ServletContextEvent arg0) {
 		IOHelper.logContext("(AppListener.contextDestroyed()) Shutdown Application...");
-		ThreadContext.getRDB().closeConnection();
 		for (int i = 0; i <= LN_MAX; i++) {
 			IDBConnection db = ThreadContext.getDB(i);
 			if(db != null){

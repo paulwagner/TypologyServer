@@ -8,7 +8,9 @@ import com.google.gson.Gson;
 
 import de.typology.db.layer.IDBLayer;
 import de.typology.db.persistence.IDBConnection;
+import de.typology.rdb.connectors.MySQLSessionConnector;
 import de.typology.rdb.persistence.IRDBConnection;
+import de.typology.rdb.persistence.MySQLConnection;
 import de.typology.requests.IRequestProcessor;
 import de.typology.requests.RequestProcessor;
 import de.typology.retrieval.RetrievalFactory;
@@ -31,9 +33,9 @@ public class ThreadContext {
 	private static final IDBLayer[] primitiveLayers = new IDBLayer[LN_MAX + 1];
 	
 	/**
-	 * Global rdb object. Default is mysql.
+	 * Global rdb connectors. db object is stored within them.
 	 */
-	private static IRDBConnection rdb = null;
+	private static MySQLSessionConnector mysqlSessionConnector = null;
 
 	/**
 	 * Global jsonHandler.
@@ -163,9 +165,18 @@ public class ThreadContext {
 	 * 
 	 * @return true if store was successful            
 	 */
-	public static boolean setRDB(IRDBConnection db){
-		if(ThreadContext.rdb == null){
-			ThreadContext.rdb = db;
+	public static void initializeRDBConnectors(IRDBConnection db){
+		initializeMySQLSessionConnector((MySQLConnection) db);
+	}
+	
+	/**
+	 * @param db the rdb
+	 * 
+	 * @return true if store was successful            
+	 */
+	public static boolean initializeMySQLSessionConnector(MySQLConnection db){
+		if(ThreadContext.mysqlSessionConnector == null){
+			ThreadContext.mysqlSessionConnector = new MySQLSessionConnector(db);
 			return true;
 		}
 		return false;
@@ -174,8 +185,8 @@ public class ThreadContext {
 	/**
 	 * @return the rdb
 	 */
-	public static IRDBConnection getRDB(){
-		return ThreadContext.rdb;
+	public static MySQLSessionConnector getMySQLSessionConnector(){
+		return ThreadContext.mysqlSessionConnector;
 	}
 	
 	/**

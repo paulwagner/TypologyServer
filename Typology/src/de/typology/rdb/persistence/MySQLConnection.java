@@ -8,6 +8,7 @@ package de.typology.rdb.persistence;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -92,94 +93,81 @@ public class MySQLConnection implements IRDBConnection {
 	}
 
 	/* (non-Javadoc)
-	 * @see de.typology.rdb.persistence.IRDBConnection#executeQuery(java.lang.String)
+	 * @see de.typology.rdb.persistence.IRDBConnection#getPreparedStatement(java.lang.String)
 	 */
 	@Override
-	public ResultSet executeQuery(String query) throws SQLException {
-		if (connection == null) {
-			IOHelper.logErrorContext("ERROR: (MySQLConnection.executeQuery()) Connection is not open! Unable to execute Query");
-			throw new SQLException(
-					"(MySQLConnection.executeQuery()) connection is null");
-		}
+	public PreparedStatement getPreparedStatement(String qry) throws SQLException{
+		checkConnection();
+		return connection.prepareStatement(qry, Statement.RETURN_GENERATED_KEYS);
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executePreparedQuery(java.sql.PreparedStatement)
+	 */
+	@Override
+	public ResultSet executePreparedQuery(PreparedStatement stm) throws SQLException {
+		checkConnection();
 		ResultSet result = null;
 		try {
-			Statement smt = connection.createStatement();
-			result = smt.executeQuery(query);
-			smt.close();
+			result = stm.executeQuery();
+			stm.close();			
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
-					"ERROR: (MySQLConnection.executeQuery()) Query failed: "
-							+ query + " Message: " + e.getMessage(), e);
+					"ERROR: (MySQLConnection.executeQuery()) Query failed. Message: " + e.getMessage(), e);
 			throw e;
 		}
 		return result;
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see de.typology.rdb.persistence.IRDBConnection#executeUpdateQuery(java.lang.String)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executePreparedUpdateQuery(java.sql.PreparedStatement)
 	 */
 	@Override
-	public int executeUpdateQuery(String query) throws SQLException {
-		if (connection == null) {
-			IOHelper.logErrorContext("ERROR: (MySQLConnection.executeQuery()) Connection is not open! Unable to execute Update");
-			throw new SQLException(
-					"(MySQLConnection.executeUpdate()) connection is null");
-		}
+	public int executePreparedUpdateQuery(PreparedStatement stm) throws SQLException {
+		checkConnection();
 		int count = -1;
 		try {
-			Statement smt = connection.createStatement();
-			count = smt.executeUpdate(query);
-			smt.close();
+			count = stm.executeUpdate();
+			stm.close();
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
-					"ERROR: (MySQLConnection.executeUpdate()) Update failed: "
-							+ query + " Message: " + e.getMessage(), e);
+					"ERROR: (MySQLConnection.executeUpdate()) Update failed. Message: " + e.getMessage(), e);
+			throw e;
+		}
+		return count;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executePreparedRowQuery(java.sql.PreparedStatement)
+	 */
+	@Override
+	public int executePreparedRowQuery(PreparedStatement stm) throws SQLException {
+		checkConnection();
+		int count = -1;
+		try {
+			ResultSet set = stm.getGeneratedKeys();
+			if(set.next()){
+				count = set.getInt(1);
+			}
+			stm.close();
+		} catch (SQLException e) {
+			IOHelper.logErrorExceptionContext(
+					"ERROR: (MySQLConnection.executeUpdate()) Update failed. Message: " + e.getMessage(), e);
 			throw e;
 		}
 		return count;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.typology.rdb.persistence.IRDBConnection#executeLookup(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	/**
+	 * Check if connection is valid. If not, SQLException will be thrown
+	 * @throws SQLException
 	 */
-	@Override
-	public ResultSet executeLookup(String fields, String table, String where,
-			String order_by) throws SQLException {
-		if (order_by != "") {
-			return executeQuery("SELECT " + fields + " FROM " + table
-					+ " WHERE " + where + "ORDER BY " + order_by);
-		} else {
-			return executeQuery("SELECT " + fields + " FROM " + table
-					+ " WHERE " + where);
+	private void checkConnection() throws SQLException {
+		if (connection == null) {
+			IOHelper.logErrorContext("ERROR: (MySQLConnection.executeQuery()) Connection is not open! Unable to execute Update");
+			throw new SQLException(
+					"(MySQLConnection.executeUpdate()) connection is null");
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see de.typology.rdb.persistence.IRDBConnection#executeDelete(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public int executeDelete(String table, String where) throws SQLException {
-		return executeUpdateQuery("DELETE FROM " + table + " WHERE " + where);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.typology.rdb.persistence.IRDBConnection#executeUpdate(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public int executeUpdate(String fields, String table, String values,
-			String where) throws SQLException {
-		return executeUpdateQuery("UPDATE " + table + " SET (" + fields
-				+ ") VALUES (" + values + ") WHERE " + where);
-	}
-
-	/* (non-Javadoc)
-	 * @see de.typology.rdb.persistence.IRDBConnection#executeInsert(java.lang.String, java.lang.String, java.lang.String)
-	 */
-	@Override
-	public int executeInsert(String fields, String table, String values)
-			throws SQLException {
-		return executeUpdateQuery("INSERT INTO " + table + "(" + fields
-				+ ") VALUES (" + values + ")");
-	}
+	}	
 
 }

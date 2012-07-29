@@ -5,6 +5,7 @@
  */
 package de.typology.rdb.persistence;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -23,72 +24,42 @@ public interface IRDBConnection {
 	public abstract void closeConnection();
 
 	/**
+	 * Get a prepared statement with specified query
+	 * 
+	 * @param qry the query with '?' placeholders
+	 * @return the prepared statement
+	 * @throws SQLException
+	 */
+	public PreparedStatement getPreparedStatement(String qry) throws SQLException;	
+	
+	/**
 	 * Executes a given Query and returns result set. This method only supports
 	 * SELECT statements!
 	 * 
-	 * @param query
+	 * @param stm Prepared statement
 	 * @return resultset
 	 * @throws SQLException
 	 */
-	public abstract ResultSet executeQuery(String query) throws SQLException;
+	public abstract ResultSet executePreparedQuery(PreparedStatement stm) throws SQLException;
 
 	/**
 	 * Executes a given Updatequery and returns number of affected rows. This
-	 * method only supports DELETE, UPDATE and INSERT statements!
+	 * method only supports UPDATE statements!
 	 * 
-	 * @param query
+	 * @param stm Prepared statement
 	 * @return number of affected rows
 	 * @throws SQLException
 	 */
-	public abstract int executeUpdateQuery(String query) throws SQLException;
+	public abstract int executePreparedUpdateQuery(PreparedStatement stm) throws SQLException;
 
 	/**
-	 * Executes a simple lookup.
+	 * Executes a given Rowquery and returns inserted or deletet primary key. This
+	 * method only supports INSERT and DELETE statements!
 	 * 
-	 * @param fields
-	 * @param table
-	 * @param where
-	 * @param order_by
-	 * @return resultset
-	 * @throws SQLException
-	 */
-	public abstract ResultSet executeLookup(String fields, String table,
-			String where, String order_by) throws SQLException;
-
-	/**
-	 * Execute a delete.
-	 * 
-	 * @param table
-	 * @param where
+	 * @param stm Prepared statement
 	 * @return number of affected rows
 	 * @throws SQLException
 	 */
-	public abstract int executeDelete(String table, String where)
-			throws SQLException;
-
-	/**
-	 * Execute an update.
-	 * 
-	 * @param fields
-	 * @param table
-	 * @param values
-	 * @param where
-	 * @return number of affected rows
-	 * @throws SQLException
-	 */
-	public abstract int executeUpdate(String fields, String table,
-			String values, String where) throws SQLException;
-
-	/**
-	 * Executes an insert.
-	 * 
-	 * @param fields
-	 * @param table
-	 * @param values
-	 * @return number of affected rows
-	 * @throws SQLException
-	 */
-	public abstract int executeInsert(String fields, String table, String values)
-			throws SQLException;
+	public abstract int executePreparedRowQuery(PreparedStatement stm) throws SQLException;
 
 }
