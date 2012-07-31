@@ -104,7 +104,7 @@ public class RequestProcessor implements IRequestProcessor {
 				GetPrimitiveObjectClient.class);
 		if (data == null || data.offset == null) {
 			request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
-					"Insufficient request data. We need at least the developer key. Refer to wiki.typology.de for the API");
+					"Insufficient request data. We need at least a valid developer key. Refer to wiki.typology.de for the API");
 			return;
 		}
 
@@ -145,7 +145,7 @@ public class RequestProcessor implements IRequestProcessor {
 			}
 			request.setDeveloperKeyToSession(dlfnr);
 		
-			if(data.uid != null && !data.uid.isEmpty() && !data.userpass.isEmpty()){
+			if(data.uid != null && data.userpass != null && !data.uid.isEmpty() && !data.userpass.isEmpty()){
 				int ulfnr = ThreadContext.getMySQLSessionConnector().getOrCreateUlfnr(dlfnr, data.uid, data.userpass);
 				request.setUlfnrToSession(ulfnr);
 			}

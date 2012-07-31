@@ -10,7 +10,7 @@ import java.sql.SQLException;
 import de.typology.rdb.persistence.MySQLConnection;
 import de.typology.tools.IOHelper;
 
-public class MySQLSessionConnector {
+public class MySQLSessionConnector implements IRDBSessionConnector {
 	
 	// MEMBERS
 	
@@ -31,10 +31,10 @@ public class MySQLSessionConnector {
 	
 	// METHODS
 	
-	/**
-	 * Check if given developer key is a valid one
-	 * @return if greater zero key is valid (dlfnr), if -1 key is invalid
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.connectors.IRDBSessionConnector#checkDeveloperKey(java.lang.String)
 	 */
+	@Override
 	public int checkDeveloperKey(String key){
 		String qry = "SELECT dlfnr FROM Developer d WHERE d.develkey = ?";
 		ResultSet result = null;
@@ -53,13 +53,10 @@ public class MySQLSessionConnector {
 		return -1;
 	}
 	
-	/**
-	 * Gets ulfnr with specified keys. Creates new user if not existing.
-	 * 
-	 * @param develkey Developerkey
-	 * @param uid developer user id
-	 * @return ulfnr of inserted row or existing user specified by params
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.connectors.IRDBSessionConnector#getOrCreateUlfnr(int, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public int getOrCreateUlfnr(int dlfnr, String uid, String userpass){
 		String qry = "SELECT ulfnr FROM User WHERE dlfnr = ? AND uid = ? AND userpass = MD5(?)";
 		try{

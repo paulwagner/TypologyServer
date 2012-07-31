@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 
 import de.typology.db.layer.IDBLayer;
 import de.typology.db.persistence.IDBConnection;
+import de.typology.rdb.connectors.IRDBSessionConnector;
 import de.typology.rdb.connectors.MySQLSessionConnector;
 import de.typology.rdb.persistence.IRDBConnection;
 import de.typology.rdb.persistence.MySQLConnection;
@@ -35,7 +36,7 @@ public class ThreadContext {
 	/**
 	 * Global rdb connectors. db object is stored within them.
 	 */
-	private static MySQLSessionConnector mysqlSessionConnector = null;
+	private static IRDBSessionConnector mysqlSessionConnector = null;
 
 	/**
 	 * Global jsonHandler.
@@ -185,7 +186,7 @@ public class ThreadContext {
 	/**
 	 * @return the rdb
 	 */
-	public static MySQLSessionConnector getMySQLSessionConnector(){
+	public static IRDBSessionConnector getMySQLSessionConnector(){
 		return ThreadContext.mysqlSessionConnector;
 	}
 	
