@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import de.typology.rdb.persistence.MySQLConnection;
+import de.typology.tools.IOHelper;
 
 public class MySQLSessionConnector {
 	
@@ -32,21 +33,24 @@ public class MySQLSessionConnector {
 	
 	/**
 	 * Check if given developer key is a valid one
+	 * @return if greater zero key is valid (dlfnr), if -1 key is invalid
 	 */
-	public boolean isValidDeveloperKey(String key){
-		String qry = "SELECT * FROM Developer d WHERE d.develkey = MD5(?)";
+	public int checkDeveloperKey(String key){
+		String qry = "SELECT dlfnr FROM Developer d WHERE d.develkey = ?";
 		ResultSet result = null;
 		try {
 			PreparedStatement stm = database.getPreparedStatement(qry);
-			stm.setString(0, key);
+			stm.setString(1, key);
 			result = database.executePreparedQuery(stm);
 			if(result.next()){
-				return true;
+				int tmp = result.getInt(1); 
+				stm.close();
+				return tmp;
 			}
 		} catch (SQLException e) {
-			return false;
+			IOHelper.logErrorException("(MySQLSessionConnector.isValidDeveloperKey()) Error executing query " + qry, e);
 		}
-		return false;
+		return -1;
 	}
 	
 	/**
@@ -56,29 +60,38 @@ public class MySQLSessionConnector {
 	 * @param uid developer user id
 	 * @return ulfnr of inserted row or existing user specified by params
 	 */
-	public int getOrCreateUlfnr(String develkey, String uid){
-		String qry = "SELECT ulfnr FROM User WHERE develkey = ? AND uid = ?";
+	public int getOrCreateUlfnr(int dlfnr, String uid, String userpass){
+		String qry = "SELECT ulfnr FROM User WHERE dlfnr = ? AND uid = ? AND userpass = MD5(?)";
 		try{
 			PreparedStatement stm = database.getPreparedStatement(qry);
-			stm.setString(0, develkey);
-			stm.setString(1, uid);
+			stm.setInt(1, dlfnr);
+			stm.setString(2, uid);
+			stm.setString(3, userpass);			
 			ResultSet set = database.executePreparedQuery(stm);
 			if(set.next()){
-				return set.getInt(1);
+				int result = set.getInt(1);
+				stm.close();
+				return result;
 			}
-		} catch (SQLException e){}
+		} catch (SQLException e){
+			IOHelper.logErrorException("(MySQLSessionConnector.getOrCreateUlfnr()) Error executing query " + qry, e);						
+		}
 		
 		int key = -1;
-		String qry_insert = "INSERT INTO User(develkey, uid) VALUES(?, ?)";
+		String qry_insert = "INSERT INTO User(dlfnr, uid, userpass) VALUES(?, ?, MD5(?))";
 		try{
 			PreparedStatement stm = database.getPreparedStatement(qry_insert);
-			stm.setString(0, develkey);
-			stm.setString(1, uid);
+			stm.setInt(1, dlfnr);
+			stm.setString(2, uid);
+			stm.setString(3, userpass);			
 			key = database.executePreparedRowQuery(stm);
+			stm.close();
 			if(key > 0){
 				return key;
 			}
-		} catch (SQLException e){}
+		} catch (SQLException e){
+			IOHelper.logErrorException("(MySQLSessionConnector.getOrCreateUlfnr()) Error executing query " + qry, e);			
+		}
 		return -1;
 	}
 

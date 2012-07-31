@@ -137,15 +137,16 @@ public class RequestProcessor implements IRequestProcessor {
 		
 		try{			
 			request.createSession();
-			if(!ThreadContext.getMySQLSessionConnector().isValidDeveloperKey(data.dkey)){
+			int dlfnr = ThreadContext.getMySQLSessionConnector().checkDeveloperKey(data.dkey);
+			if(dlfnr <= 0){
 				request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
 						"Insufficient request data. Given developer key is invalid!");
 				return;				
 			}
-			request.setDeveloperKeyToSession(data.dkey);
+			request.setDeveloperKeyToSession(dlfnr);
 		
-			if(data.uid != null && !data.uid.isEmpty()){
-				int ulfnr = ThreadContext.getMySQLSessionConnector().getOrCreateUlfnr(data.dkey, data.uid);
+			if(data.uid != null && !data.uid.isEmpty() && !data.userpass.isEmpty()){
+				int ulfnr = ThreadContext.getMySQLSessionConnector().getOrCreateUlfnr(dlfnr, data.uid, data.userpass);
 				request.setUlfnrToSession(ulfnr);
 			}
 			
@@ -167,8 +168,6 @@ public class RequestProcessor implements IRequestProcessor {
 	 */
 	private void closeSession(IRequest request) {
 		request.destroySession();
-		// TODO destroy in mysql
-		
 		// If everything successful make response
 		request.makeResponse(new DataObjectSvr());
 	}	

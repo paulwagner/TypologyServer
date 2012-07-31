@@ -110,7 +110,6 @@ public class MySQLConnection implements IRDBConnection {
 		ResultSet result = null;
 		try {
 			result = stm.executeQuery();
-			stm.close();			
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
 					"ERROR: (MySQLConnection.executeQuery()) Query failed. Message: " + e.getMessage(), e);
@@ -128,7 +127,6 @@ public class MySQLConnection implements IRDBConnection {
 		int count = -1;
 		try {
 			count = stm.executeUpdate();
-			stm.close();
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
 					"ERROR: (MySQLConnection.executeUpdate()) Update failed. Message: " + e.getMessage(), e);
@@ -145,11 +143,11 @@ public class MySQLConnection implements IRDBConnection {
 		checkConnection();
 		int count = -1;
 		try {
+			stm.executeUpdate();
 			ResultSet set = stm.getGeneratedKeys();
 			if(set.next()){
 				count = set.getInt(1);
 			}
-			stm.close();
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
 					"ERROR: (MySQLConnection.executeUpdate()) Update failed. Message: " + e.getMessage(), e);

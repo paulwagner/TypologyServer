@@ -10,6 +10,7 @@ public class InitiateSessionObjectClient {
 	
 	public String dkey;
 	public String uid;
+	public String userpass;
 	
 	public Double version;
 
