@@ -1,5 +1,5 @@
 /**
- * Test case for DBConnection. This test really creates a database on your hdd,
+ * Method test case for DBConnection. This test really creates a database on your hdd,
  * which is uncommon for a test, but the only thing we can test here.
  * 
  * @author Paul Wagner
