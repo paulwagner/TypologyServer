@@ -31,7 +31,7 @@ public class Request extends AbstractRequestCallback {
 
 	// Primary keys of db tables are stored in session.
 	// Everything else gets queried on runtime
-	private String developer_key;
+	private int dlfnr;
 	private int ulfnr = -1;
 	private String sid;
 
@@ -67,9 +67,18 @@ public class Request extends AbstractRequestCallback {
 	 * @see de.typology.requests.IRequest#setDeveloperKeyToSession(java.lang.String)
 	 */
 	@Override
-	public boolean setDeveloperKeyToSession(String developer_key) {
-		this.developer_key = developer_key;
-		return storeInSession("developer_key", developer_key);
+	public boolean setDeveloperKeyToSession(int dlfnr) {
+		this.dlfnr = dlfnr;
+		return storeInSession("developer_key", dlfnr);
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.requests.IRequest#seUlfnrToSession(java.lang.Integer)
+	 */	
+	@Override
+	public boolean setUlfnrToSession(int ulfnr){
+		this.ulfnr = ulfnr;
+		return storeInSession("ulfnr", ulfnr);
 	}
 	
 	/* (non-Javadoc)
@@ -100,8 +109,8 @@ public class Request extends AbstractRequestCallback {
 	 * @see de.typology.requests.IRequest#getDeveloperKey()
 	 */
 	@Override
-	public String getDeveloperKey(){
-		return this.developer_key;
+	public int getDeveloperKey(){
+		return this.dlfnr;
 	}
 
 	// Request/Response
@@ -203,8 +212,8 @@ public class Request extends AbstractRequestCallback {
 	public boolean loadSession() {
 		if (this.session != null) {
 			this.ulfnr = getSessionValueAsInteger("ulfnr", -1);
-			this.developer_key = getSessionValueAsString("developer_key");
-			if (this.developer_key == null) {
+			this.dlfnr = getSessionValueAsInteger("dlfnr", -1);
+			if (this.dlfnr <= 0) {
 				return false;
 			}
 			return true;

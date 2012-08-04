@@ -1,0 +1,12 @@
+MySQL Typology specification
+
+SessionConnector:
+Developer(_dlfnr_, develkey, develpass, reg_name, reg_mail)
+User(ulfnr, _^dlfnr_, _uid_, userpass)
+
+LogConnector:
+Log(_llfnr_, ^ulfnr, offset)
+
+UserStoreConnector:
+UserStore(_^ulfnr_, text, changedate)
+ 

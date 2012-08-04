@@ -7,6 +7,7 @@
  */
 package de.typology.requests;
 
+import static de.typology.tools.Resources.FN_CLOSESESSION;
 import static de.typology.tools.Resources.FN_GETPRIMITIVE;
 import static de.typology.tools.Resources.FN_INITIATESESSION;
 import static de.typology.tools.Resources.SC_ERR;
@@ -15,6 +16,7 @@ import static de.typology.tools.Resources.SC_ERR_NO_SESSION;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.isA;
 import static org.powermock.api.easymock.PowerMock.expectLastCall;
+import static org.powermock.api.easymock.PowerMock.mockStatic;
 import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verify;
@@ -29,14 +31,17 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.gson.Gson;
 
+import de.typology.rdb.connectors.MySQLSessionConnector;
 import de.typology.requests.interfaces.client.GetPrimitiveObjectClient;
 import de.typology.requests.interfaces.client.InitiateSessionObjectClient;
+import de.typology.requests.interfaces.svr.DataObjectSvr;
 import de.typology.requests.interfaces.svr.InitiateSessionObjectSvr;
 import de.typology.retrieval.IRetrieval;
 import de.typology.retrieval.IRetrievalFactory;
+import de.typology.threads.ThreadContext;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({})
+@PrepareForTest({ThreadContext.class})
 public class RequestProcessorTest {
 
 	private static RequestProcessor processor;
@@ -199,7 +204,7 @@ public class RequestProcessorTest {
 		// Return request parameter
 		expect(request.getRequestParameter("data")).andReturn(null);
 		request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
-				"Insufficient request data. We need at least the developer key. Refer to wiki.typology.de for the API");		
+				"Insufficient request data. We need at least a valid developer key. Refer to wiki.typology.de for the API");		
 		
 		// Run mock
 		replay(request);
@@ -226,7 +231,7 @@ public class RequestProcessorTest {
 		data.dkey = "";
 		expect(request.getRequestParameter("data")).andReturn(jsonHandler.toJson(data));
 		request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
-				"Insufficient request data. We need at least the developer key. Refer to wiki.typology.de for the API");		
+				"Insufficient request data. We need at least a valid developer key. Refer to wiki.typology.de for the API");		
 		
 		// Run mock
 		replay(request);
@@ -254,13 +259,19 @@ public class RequestProcessorTest {
 		expect(request.getRequestParameter("data")).andReturn(jsonHandler.toJson(data));
 		// Expected method calls
 		request.createSession();
-		expect(request.setDeveloperKeyToSession("developerkey")).andReturn(true);
+		// Mock MySQL session connector in
+		MySQLSessionConnector sessionConnector = PowerMock.createMock(MySQLSessionConnector.class);
+		expect(sessionConnector.checkDeveloperKey("developerkey")).andReturn(5);
+		mockStatic(ThreadContext.class);
+		expect(ThreadContext.getMySQLSessionConnector()).andReturn(sessionConnector);
+		// Expected method calls
+		expect(request.setDeveloperKeyToSession(5)).andReturn(true);
 		request.makeResponse(isA(InitiateSessionObjectSvr.class));
 		
 		// Run mock
-		replay(request);
+		replayAll();
 		processor.processRequest(request);
-		verify(request);			
+		verifyAll();			
 	}
 
 	/**
@@ -298,7 +309,7 @@ public class RequestProcessorTest {
 	 * If getPrimitive is called without offset, makeError is expected
 	 */
 	@Test
-	public void processRequest_getPrimitiveWithoutOffset_SCERRINSUFFICIENTREQUESTDATA() {
+	public void processRequest_getPrimitiveWithoutData_SCERRINSUFFICIENTREQUESTDATA() {
 		// Prepare request for mocking
 		request.getSession();
 		// Just for expected function calls
@@ -309,11 +320,9 @@ public class RequestProcessorTest {
 		expect(request.isSessionLoaded()).andReturn(true);
 		expect(request.loadSession()).andReturn(true);
 		// Return request parameter
-		GetPrimitiveObjectClient data = new GetPrimitiveObjectClient();
-		data.offset = null;
-		expect(request.getRequestParameter("data")).andReturn(jsonHandler.toJson(data));
+		expect(request.getRequestParameter("data")).andReturn(jsonHandler.toJson(null));
 		request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
-				"Insufficient request data. We need at least the developer key. Refer to wiki.typology.de for the API");		
+				"Insufficient request data. We need at least a valid developer key. Refer to wiki.typology.de for the API");		
 		
 		// Run mock
 		replay(request);
@@ -351,5 +360,29 @@ public class RequestProcessorTest {
 		processor.processRequest(request);
 		verifyAll();	
 	}
+	
+	/**
+	 * If closeSession is called correctly, some function calls are expected
+	 */
+	@Test
+	public void processRequest_closeSession_callExpectedMethods() throws Exception{
+		// Prepare request for mocking
+		request.getSession();
+		// Just for expected function calls
+		expect(request.getRequestParameter("do")).andReturn("closesession");
+		request.setFunction(FN_CLOSESESSION);
+		// Return initiate function
+		expect(request.getFunction()).andReturn(FN_CLOSESESSION);
+		expect(request.isSessionLoaded()).andReturn(true);
+		expect(request.loadSession()).andReturn(true);		
+		// Expected method calls
+		request.destroySession();
+		request.makeResponse(isA(DataObjectSvr.class));
+		
+		// Run mock
+		replayAll();
+		processor.processRequest(request);
+		verifyAll();			
+	}	
 	
 }

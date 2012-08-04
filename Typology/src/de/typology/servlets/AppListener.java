@@ -8,15 +8,20 @@
 
 package de.typology.servlets;
 
+import static de.typology.tools.Resources.LN_MAX;
+
+import java.sql.SQLException;
+
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import de.typology.db.persistence.IDBConnection;
+import de.typology.rdb.persistence.IRDBConnection;
+import de.typology.rdb.persistence.MySQLConnection;
 import de.typology.threads.ThreadContext;
 import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
-import static de.typology.tools.Resources.LN_MAX;
 
 public class AppListener implements ServletContextListener {
 
@@ -42,6 +47,17 @@ public class AppListener implements ServletContextListener {
 					IOHelper.logErrorExceptionContext("WARNING: (AppListener.init()) Unable to load configfile...", e);
 				}
 			}
+			try {
+				IRDBConnection rdb = new MySQLConnection();
+				rdb.openConnection();
+				ThreadContext.initializeRDBConnectors(rdb);
+			} catch (ClassNotFoundException e) {
+				IOHelper.logErrorExceptionContext("ERROR: (AppListener.init()) Unable to load MySQL connector! Unable to start up...", e);
+				throw new NullPointerException("ERROR: (AppListener.init()) Unable to load MySQL connector! Unable to start up...");
+			} catch(SQLException e) {
+				IOHelper.logErrorExceptionContext("ERROR: (AppListener.init()) Unable to connect to MySQL database! Unable to start up...", e);				
+				throw new NullPointerException("ERROR: (AppListener.init()) Unable to connect to MySQL database! Unable to start up...");
+			}
 		} else {
 			IOHelper.logError("(AppListener.contextInitialized) ServletContext couldn't be loaded. Unable to start up...");
 			throw new NullPointerException("Unable to load ServletContext");
@@ -54,7 +70,6 @@ public class AppListener implements ServletContextListener {
 	 * @see ServletContextListener#contextDestroyed(ServletContextEvent)
 	 */
 	public void contextDestroyed(ServletContextEvent arg0) {
-		//ServletContext sc = arg0.getServletContext();
 		IOHelper.logContext("(AppListener.contextDestroyed()) Shutdown Application...");
 		for (int i = 0; i <= LN_MAX; i++) {
 			IDBConnection db = ThreadContext.getDB(i);

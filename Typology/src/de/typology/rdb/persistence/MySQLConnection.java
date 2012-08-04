@@ -8,18 +8,22 @@ package de.typology.rdb.persistence;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import de.typology.tools.ConfigHelper;
 import de.typology.tools.IOHelper;
 
-public class MySQLConnection {
+public class MySQLConnection implements IRDBConnection {
 
 	// PROPERTIES
 
 	private String driver;
-	private String path;
+	private String host;
+	private int port;
+	private String database;
 	private String user;
 	private String pass;
 
@@ -29,24 +33,17 @@ public class MySQLConnection {
 
 	/**
 	 * Constructor. When specified driver is not found, ClassNotFoundException
-	 * will be thrown.
+	 * will be thrown. Config values will be loaded from ConfigHelper
 	 * 
-	 * @param driver
-	 *            Driver for JDBC
-	 * @param path
-	 *            Path for MySQL
-	 * @param user
-	 *            Username for MySQL
-	 * @param pass
-	 *            Password for MySQL
 	 * @throws ClassNotFoundException
 	 */
-	public MySQLConnection(String path, String user, String pass)
-			throws ClassNotFoundException {
+	public MySQLConnection() throws ClassNotFoundException {
 		this.driver = "com.mysql.jdbc.Driver";
-		this.pass = pass;
-		this.path = path;
-		this.user = user;
+		this.host = ConfigHelper.getMYSQL_HOST();
+		this.port = 3306;
+		this.pass = ConfigHelper.getMYSQL_PASS();
+		this.database = ConfigHelper.getMYSQL_DB_MAIN();
+		this.user = ConfigHelper.getMYSQL_USER();
 
 		try {
 			Class.forName(this.driver);
@@ -60,15 +57,15 @@ public class MySQLConnection {
 
 	// METHODS
 
-	/**
-	 * Opens new connection.
-	 * 
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#openConnection()
 	 */
+	@Override
 	public void openConnection() throws SQLException {
 		try {
-			this.connection = DriverManager.getConnection(this.path, this.user,
-					this.pass);
+			this.connection = DriverManager.getConnection("jdbc:mysql://"
+					+ this.host + ":" + this.port + "/" + this.database + "?"
+					+ "user=" + this.user + "&password=" + this.pass);
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
 					"ERROR: (MySQLConnection.openConnection()) Unable to connect to mysql database. Deamon running and config ok?",
@@ -78,9 +75,10 @@ public class MySQLConnection {
 
 	}
 
-	/**
-	 * Close connection.
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#closeConnection()
 	 */
+	@Override
 	public void closeConnection() {
 		if (connection == null) {
 			return;
@@ -94,124 +92,80 @@ public class MySQLConnection {
 		}
 	}
 
-	/**
-	 * Executes a given Query and returns result set. This method only supports
-	 * SELECT statements!
-	 * 
-	 * @param query
-	 * @return resultset
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#getPreparedStatement(java.lang.String)
 	 */
-	public ResultSet executeQuery(String query) throws SQLException {
-		if (connection == null) {
-			IOHelper.logErrorContext("ERROR: (MySQLConnection.executeQuery()) Connection is not open! Unable to execute Query");
-			throw new SQLException(
-					"(MySQLConnection.executeQuery()) connection is null");
-		}
+	@Override
+	public PreparedStatement getPreparedStatement(String qry) throws SQLException{
+		checkConnection();
+		return connection.prepareStatement(qry, Statement.RETURN_GENERATED_KEYS);
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executePreparedQuery(java.sql.PreparedStatement)
+	 */
+	@Override
+	public ResultSet executePreparedQuery(PreparedStatement stm) throws SQLException {
+		checkConnection();
 		ResultSet result = null;
 		try {
-			Statement smt = connection.createStatement();
-			result = smt.executeQuery(query);
-			smt.close();
+			result = stm.executeQuery();
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
-					"ERROR: (MySQLConnection.executeQuery()) Query failed: "
-							+ query + " Message: " + e.getMessage(), e);
+					"ERROR: (MySQLConnection.executeQuery()) Query failed. Message: " + e.getMessage(), e);
 			throw e;
 		}
 		return result;
 	}
-
-	/**
-	 * Executes a given Updatequery and returns number of affected rows. This
-	 * method only supports DELETE, UPDATE and INSERT statements!
-	 * 
-	 * @param query
-	 * @return number of affected rows
-	 * @throws SQLException
+	
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executePreparedUpdateQuery(java.sql.PreparedStatement)
 	 */
-	public int executeUpdateQuery(String query) throws SQLException {
-		if (connection == null) {
-			IOHelper.logErrorContext("ERROR: (MySQLConnection.executeQuery()) Connection is not open! Unable to execute Update");
-			throw new SQLException(
-					"(MySQLConnection.executeUpdate()) connection is null");
-		}
+	@Override
+	public int executePreparedUpdateQuery(PreparedStatement stm) throws SQLException {
+		checkConnection();
 		int count = -1;
 		try {
-			Statement smt = connection.createStatement();
-			count = smt.executeUpdate(query);
-			smt.close();
+			count = stm.executeUpdate();
 		} catch (SQLException e) {
 			IOHelper.logErrorExceptionContext(
-					"ERROR: (MySQLConnection.executeUpdate()) Update failed: "
-							+ query + " Message: " + e.getMessage(), e);
+					"ERROR: (MySQLConnection.executeUpdate()) Update failed. Message: " + e.getMessage(), e);
+			throw e;
+		}
+		return count;
+	}
+	
+	/* (non-Javadoc)
+	 * @see de.typology.rdb.persistence.IRDBConnection#executePreparedRowQuery(java.sql.PreparedStatement)
+	 */
+	@Override
+	public int executePreparedRowQuery(PreparedStatement stm) throws SQLException {
+		checkConnection();
+		int count = -1;
+		try {
+			stm.executeUpdate();
+			ResultSet set = stm.getGeneratedKeys();
+			if(set.next()){
+				count = set.getInt(1);
+			}
+		} catch (SQLException e) {
+			IOHelper.logErrorExceptionContext(
+					"ERROR: (MySQLConnection.executeUpdate()) Update failed. Message: " + e.getMessage(), e);
 			throw e;
 		}
 		return count;
 	}
 
 	/**
-	 * Executes a simple lookup.
-	 * 
-	 * @param fields
-	 * @param table
-	 * @param where
-	 * @param order_by
-	 * @return resultset
+	 * Check if connection is valid. If not, SQLException will be thrown
 	 * @throws SQLException
 	 */
-	public ResultSet executeLookup(String fields, String table, String where,
-			String order_by) throws SQLException {
-		if (order_by != "") {
-			return executeQuery("SELECT " + fields + " FROM " + table
-					+ " WHERE " + where + "ORDER BY " + order_by);
-		} else {
-			return executeQuery("SELECT " + fields + " FROM " + table
-					+ " WHERE " + where);
+	private void checkConnection() throws SQLException {
+		if (connection == null) {
+			IOHelper.logErrorContext("ERROR: (MySQLConnection.executeQuery()) Connection is not open! Unable to execute Update");
+			throw new SQLException(
+					"(MySQLConnection.executeUpdate()) connection is null");
 		}
-	}
-
-	/**
-	 * Execute a delete.
-	 * 
-	 * @param table
-	 * @param where
-	 * @return number of affected rows
-	 * @throws SQLException
-	 */
-	public int executeDelete(String table, String where) throws SQLException {
-		return executeUpdateQuery("DELETE FROM " + table + " WHERE " + where);
-	}
-
-	/**
-	 * Execute an update.
-	 * 
-	 * @param fields
-	 * @param table
-	 * @param values
-	 * @param where
-	 * @return number of affected rows
-	 * @throws SQLException
-	 */
-	public int executeUpdate(String fields, String table, String values,
-			String where) throws SQLException {
-		return executeUpdateQuery("UPDATE " + table + " SET (" + fields
-				+ ") VALUES (" + values + ") WHERE " + where);
-	}
-
-	/**
-	 * Executes an insert.
-	 * 
-	 * @param fields
-	 * @param table
-	 * @param values
-	 * @return number of affected rows
-	 * @throws SQLException
-	 */
-	public int executeInsert(String fields, String table, String values)
-			throws SQLException {
-		return executeUpdateQuery("INSERT INTO " + table + "(" + fields
-				+ ") VALUES (" + values + ")");
-	}
+	}	
 
 }

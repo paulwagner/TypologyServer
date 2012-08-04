@@ -1,5 +1,5 @@
 /**
- * Test case for Request class
+ * Method test case for Request class
  * 
  * @author Paul Wagner
  */
@@ -299,7 +299,7 @@ public class RequestTest {
 		HttpSession session = PowerMock.createMock(HttpSession.class);
 		expect(session.getId()).andReturn("mySuperSessionId");		
 		expect(session.getAttribute("ulfnr")).andReturn(5);
-		expect(session.getAttribute("developer_key")).andReturn(null);
+		expect(session.getAttribute("dlfnr")).andReturn(null);
 
 		// Prepare faked request object
 		expect(servReq.getSession(false)).andReturn(session);

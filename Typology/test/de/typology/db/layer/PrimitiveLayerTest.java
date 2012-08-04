@@ -1,5 +1,5 @@
 /**
- * Test case for primitivelayer class
+ * Method test case for primitivelayer class
  * 
  * @author Paul Wagner
  */

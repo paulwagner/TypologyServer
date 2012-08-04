@@ -12,7 +12,7 @@ package de.typology.requests;
 public interface IRequestProcessor {
 
 	/**
-	 * Execute request.
+	 * Main execute method which triggers loaded request.
 	 */
 	public abstract void processRequest(IRequest request);
 

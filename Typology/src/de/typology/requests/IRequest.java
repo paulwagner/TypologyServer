@@ -19,7 +19,9 @@ public interface IRequest {
 	 */
 	public abstract int getLang();
 
-	public abstract boolean setDeveloperKeyToSession(String developer_key);
+	public abstract boolean setDeveloperKeyToSession(int dlfnr);
+	
+	public abstract boolean setUlfnrToSession(int ulfnr);
 
 	public abstract int getFunction();
 
@@ -27,7 +29,7 @@ public interface IRequest {
 
 	public abstract int getUlfnr();
 
-	public abstract String getDeveloperKey();
+	public abstract int getDeveloperKey();
 
 	/**
 	 * Get parameter from request object or null if key not existing
