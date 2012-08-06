@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ PrimitiveRetrievalTest.class })
+@SuiteClasses({ PrimitiveRetrievalTest.class, RetrievalFactoryTest.class })
 public class AllTestsRetrieval {
 
 }
