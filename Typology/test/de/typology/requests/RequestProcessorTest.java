@@ -309,7 +309,7 @@ public class RequestProcessorTest {
 	 * If getPrimitive is called without offset, makeError is expected
 	 */
 	@Test
-	public void processRequest_getPrimitiveWithoutData_SCERRINSUFFICIENTREQUESTDATA() {
+	public void processRequest_getPrimitiveWithoutData_callPrimitiveRetrievalWithEmptyOffset() {
 		// Prepare request for mocking
 		request.getSession();
 		// Just for expected function calls
@@ -321,13 +321,17 @@ public class RequestProcessorTest {
 		expect(request.loadSession()).andReturn(true);
 		// Return request parameter
 		expect(request.getRequestParameter("data")).andReturn(jsonHandler.toJson(null));
-		request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
-				"Insufficient request data. We need at least a valid developer key. Refer to wiki.typology.de for the API");		
+		// Prepare retrieval for mocking
+		IRetrieval ret = PowerMock.createMock(IRetrieval.class);
+		ret.setSentence(null, "");
+		ret.run();
+		// Prepare requestprocessor for mocking
+		expect(retrievalFactory.getInstanceOfPrimitiveRetrieval(request)).andReturn(ret);
 		
 		// Run mock
-		replay(request);
+		replayAll();
 		processor.processRequest(request);
-		verify(request);	
+		verifyAll();	
 	}
 	
 	/**

@@ -102,17 +102,16 @@ public class RequestProcessor implements IRequestProcessor {
 
 		GetPrimitiveObjectClient data = jsonHandler.fromJson(s,
 				GetPrimitiveObjectClient.class);
-		if (data == null || data.offset == null) {
-			request.makeErrorResponse(SC_ERR_INSUFFICIENT_REQUEST_DATA,
-					"Insufficient request data. We need at least a valid developer key. Refer to wiki.typology.de for the API");
-			return;
+		String offset = "";
+		if (data != null && data.offset != null) {
+			offset = data.offset;
 		}
 
 		// TODO start new threads for logging, we dont need db maintenance with
 		// primitive retrieval
 
 		IRetrieval ret = retrievalFactory.getInstanceOfPrimitiveRetrieval(request);
-		ret.setSentence(null, data.offset);
+		ret.setSentence(null, offset);
 
 		startRetrievalThread(request, ret);
 	}
