@@ -44,6 +44,8 @@ import de.typology.threads.ThreadContext;
 @PrepareForTest({ThreadContext.class})
 public class RequestProcessorTest {
 
+	// MEMBERS
+	
 	private static RequestProcessor processor;
 	// Request Interfaces to mock
 	private static IRequest request;

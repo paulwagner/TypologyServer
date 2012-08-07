@@ -1,5 +1,5 @@
 /**
- * Test case for DBTools.
+ * Method test case for DBTools.
  * 
  * @author Paul Wagner
  */

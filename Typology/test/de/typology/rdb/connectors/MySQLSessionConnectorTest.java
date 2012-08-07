@@ -28,8 +28,11 @@ import de.typology.rdb.persistence.MySQLConnection;
 public class MySQLSessionConnectorTest {
 
 	// MEMBERS
+	
 	public static MySQLConnection mysql;
 	public static MySQLSessionConnector connector;
+	
+	// SETUP
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -42,6 +45,8 @@ public class MySQLSessionConnectorTest {
 		connector = new MySQLSessionConnector(mysql);				
 	}
 
+	// TESTS
+	
 	@Test
 	public void checkDeveloperKey_checkCorrectKey_executeRightSQLStatement() throws Exception {
 		// Expectations

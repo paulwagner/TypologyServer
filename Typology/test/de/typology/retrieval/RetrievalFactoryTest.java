@@ -22,14 +22,20 @@ import de.typology.requests.IRequest;
 @PrepareForTest({IRequest.class})
 public class RetrievalFactoryTest {
 	
+	// MEMBERS
+	
 	public static RetrievalFactory factory = new RetrievalFactory();
 	public static IRequest request;
 
+	// SETUP
+	
 	@Before
 	public void setUp(){
 		request = PowerMock.createMock(IRequest.class);
 		expect(request.getLang()).andReturn(LN_MAX);
 	}	
+	
+	// TESTS
 	
 	@Test
 	public void getInstanceOfPrimitiveRetrieval_getInstance_InstanceOfPrimitiveRetrieval() {

@@ -40,11 +40,15 @@ import de.typology.requests.interfaces.svr.GetPrimitiveObjectSvr;
 @PrepareForTest({})
 public class RequestTest {
 	
+	// MEMBERS
+	
 	private static IRequest request; // Class under test
 	// Request Interfaces to mock
 	private static HttpServletRequest servReq;
 	private static HttpServletResponse servResp; 
 
+	// SETUP
+	
 	@Before
 	public void setUp() throws Exception {
 		// Create mocking interfaces
@@ -54,6 +58,7 @@ public class RequestTest {
 		request = new Request(LN_MAX, servReq, servResp);		
 	}
 
+	// TESTS
 	
 	/**
 	 * If response object in constructor is null, exception has to be thrown

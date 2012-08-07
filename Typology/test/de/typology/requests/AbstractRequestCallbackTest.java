@@ -21,8 +21,12 @@ import de.typology.tools.ConfigHelper;
 
 public class AbstractRequestCallbackTest {
 
+	// MEMBERS
+	
 	public AbstractRequestCallback request;
 
+	// SETUP
+	
 	@Before
 	public void setUp() throws Exception {
 		// Instantiate abstract request and implement necessary methods for testing the callback methods.
@@ -140,6 +144,8 @@ public class AbstractRequestCallbackTest {
 		};		
 	}
 
+	// TESTS
+	
 	@Test
 	public void doPrimitiveRetrievalCallback_listSizeEqualsResultSize_dontStoreInSession() {
 		HashMap<Integer, String> dummy = new HashMap<Integer, String>();
