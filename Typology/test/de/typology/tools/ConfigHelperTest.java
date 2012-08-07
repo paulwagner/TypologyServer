@@ -1,5 +1,7 @@
 /**
- * Test case for class ConfigHelper
+ * Method test case for class ConfigHelper.
+ * This test case is like a class test, because there is only one interesting public function within the class.
+ * The test will also create a sample config file on your hdd, which is quite uncommon for a test, but the only thing we can test here. 
  * 
  * @author Paul Wagner
  */
@@ -22,9 +24,6 @@ public class ConfigHelperTest {
 
 	// SETUP
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		// Make testfile
@@ -36,9 +35,6 @@ public class ConfigHelperTest {
 		ConfigHelper.loadConfigFile(filename);
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
 		// Delete Testfile
@@ -51,69 +47,42 @@ public class ConfigHelperTest {
 
 	// TESTS
 
-	/**
-	 * Test method for
-	 * {@link de.typology.tools.ConfigHelper#loadConfigFile(java.lang.String)}.
-	 */
 	@Test
 	public void loadConfigFile_loadNameKey_word() {
 		assertEquals("Check equality NAME_KEY", "word",
 				ConfigHelper.getNAME_KEY());
 	}
 
-	/**
-	 * Test method for
-	 * {@link de.typology.tools.ConfigHelper#loadConfigFile(java.lang.String)}.
-	 */
 	@Test
 	public void loadConfigFile_loadResultSize_20() {
 		assertEquals("Check equality RESULT_SIZE", 20,
 				ConfigHelper.getRESULT_SIZE());
 	}
 
-	/**
-	 * Test method for
-	 * {@link de.typology.tools.ConfigHelper#loadConfigFile(java.lang.String)}.
-	 */
 	@Test
 	public void loadConfigFile_loadDbPath_path() {
 		assertEquals("Check equality DB_PATH", "/usr/local/notexisting.db",
 				ConfigHelper.getDB_PATH());
 	}
 
-	/**
-	 * Test method for
-	 * {@link de.typology.tools.ConfigHelper#loadConfigFile(java.lang.String)}.
-	 */
 	@Test
 	public void loadConfigFile_loadAppendData_true() {
 		assertTrue("Check equality APPEND_NEW_DATA",
 				ConfigHelper.getAPPEND_NEW_DATA());
 	}
 
-	/**
-	 * Test method for
-	 * {@link de.typology.tools.ConfigHelper#loadConfigFile(java.lang.String)}.
-	 */
 	@Test
 	public void loadConfigFile_loaded_true() {
 		assertTrue("Check if loaded flag is true", ConfigHelper.isLOADED());
 	}
 
-	/**
-	 * Test method for
-	 * {@link de.typology.tools.ConfigHelper#loadConfigFile(java.lang.String)}.
-	 * 
-	 * @throws Exception
-	 */
 	@Test(expected = Exception.class)
 	public void loadConfigFile_loadConfigTwice_exception() throws Exception {
 		ConfigHelper.loadConfigFile(filename);
 	}
 
-	/**
-	 * Helper method for creating sample config file
-	 */
+	// HELPER
+
 	private static String getSampleConfig() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("### SAMPLE CONFIG - DELETE IF NO TESTS RUNNING ###\n");

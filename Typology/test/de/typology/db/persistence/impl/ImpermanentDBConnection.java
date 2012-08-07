@@ -1,6 +1,6 @@
 /**
  * Impermanent database connection implementation.
- * This class will simulate a little typology graph with specified data, wich may be interesting for many purposes...
+ * This class will simulate a little typology graph with specified data, which may be interesting for many purposes...
  * 
  * @author Paul Wagner
  */

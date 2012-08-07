@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ de.typology.db.DBToolsTest.class, de.typology.tools.AllTestsTools.class, de.typology.db.layer.AllTestsDBLayer.class, 
+@Suite.SuiteClasses({ de.typology.db.AllTestsDB.class, de.typology.tools.AllTestsTools.class, de.typology.db.layer.AllTestsDBLayer.class, de.typology.rdb.connectors.AllTestsConnectors.class, 
 						de.typology.db.persistence.AllTestsPersistence.class, de.typology.retrieval.AllTestsRetrieval.class, de.typology.requests.AllTestsRequests.class})
 public final class AllTestsSuite {
 	

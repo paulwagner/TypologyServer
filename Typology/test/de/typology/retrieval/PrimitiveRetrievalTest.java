@@ -37,12 +37,16 @@ import de.typology.threads.ThreadContext;
 @PrepareForTest({ThreadContext.class, PrimitiveLayer.class, IRequestProcessor.class})
 public class PrimitiveRetrievalTest {
 
+	// MEMBERS
+	
 	private static PrimitiveRetrieval retrieval;
 
 	private static HashMap<Integer, String> map = new HashMap<Integer, String>();
 	private static PrimitiveLayer layer;
 	private static IRequest request; 
 
+	// SETUP
+	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		SetupHelperMethods.initiateContextSupport();
@@ -62,6 +66,7 @@ public class PrimitiveRetrievalTest {
 		retrieval = new PrimitiveRetrieval(request, LN_MAX);
 	}
 
+	// TESTS
 	
 	@Test
 	public void eval_doRetrievalHat_HatHatschi() {

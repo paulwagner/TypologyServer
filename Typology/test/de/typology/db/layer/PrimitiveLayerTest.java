@@ -41,11 +41,6 @@ public class PrimitiveLayerTest {
 	
 	// SETUP
 	
-	/**
-	 * Setup db connection before layer test
-	 * 
-	 * @throws java.lang.Exception
-	 */
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		SetupHelperMethods.initiateContextSupport();

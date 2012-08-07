@@ -1,11 +1,11 @@
-package de.typology.retrieval;
+package de.typology.rdb.connectors;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ PrimitiveRetrievalTest.class, RetrievalFactoryTest.class })
-public class AllTestsRetrieval {
+@SuiteClasses({ MySQLSessionConnectorTest.class })
+public class AllTestsConnectors {
 
 }

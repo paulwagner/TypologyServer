@@ -45,6 +45,7 @@ public abstract class AbstractRequestCallback implements IRequest {
 	/* (non-Javadoc)
 	 * @see de.typology.requests.IRequest#doRetrievalCallback()
 	 */	
+	
 	@Override
 	public void doRetrievalCallback(HashMap<Double, String> edges1,
 			HashMap<Double, String> edges2, HashMap<Double, String> edges3,
