@@ -1,3 +1,11 @@
+/**
+ * Request processor that executes a request.
+ * This implementation uses an object of IRequest to execute request and is therefore connector-independent.
+ * Just implement IRequest for any connection method and then call processRequest().
+ * 
+ * @author Paul Wagner
+ * 
+ */
 package de.typology.requests;
 
 import static de.typology.requests.RequestTools.translateFunctionName;
@@ -56,7 +64,7 @@ public class RequestProcessor implements IRequestProcessor {
 		
 		// If we don't have a session and no initiatesession request, we don't
 		// want to do anything
-		if(function != FN_INITIATESESSION){
+		if(function != FN_INITIATESESSION && function != -1){
 			if(!request.isSessionLoaded()){
 				request.makeErrorResponse(SC_ERR_NO_SESSION,
 						"You need to create a session first using method initiateSession()");
@@ -67,6 +75,7 @@ public class RequestProcessor implements IRequestProcessor {
 						"Failed to load session necessary data from session. Perhaps you should create a new one...");
 				return;
 			}
+			request.storeInSession("function", function);
 		}
 		
 		// Hop into requested function

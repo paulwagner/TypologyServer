@@ -157,8 +157,6 @@ public class RequestProcessorTest {
 		request.setFunction(-1);
 		// Return unknown function
 		expect(request.getFunction()).andReturn(-1);
-		expect(request.isSessionLoaded()).andReturn(true);
-		expect(request.loadSession()).andReturn(true);
 		request.makeErrorResponse(SC_ERR,
 				"Unknown function. Refer to wiki.typology.de for the API");
 		
@@ -182,6 +180,7 @@ public class RequestProcessorTest {
 		expect(request.getFunction()).andReturn(-2);
 		expect(request.isSessionLoaded()).andReturn(true);
 		expect(request.loadSession()).andReturn(true);
+		expect(request.storeInSession("function", -2)).andReturn(true);
 		request.makeErrorResponse(SC_ERR,
 				"Known but unregistered function. Refer to wiki.typology.de for the API");
 		
@@ -321,6 +320,7 @@ public class RequestProcessorTest {
 		expect(request.getFunction()).andReturn(FN_GETPRIMITIVE);
 		expect(request.isSessionLoaded()).andReturn(true);
 		expect(request.loadSession()).andReturn(true);
+		expect(request.storeInSession("function", FN_GETPRIMITIVE)).andReturn(true);		
 		// Return request parameter
 		expect(request.getRequestParameter("data")).andReturn(jsonHandler.toJson(null));
 		// Prepare retrieval for mocking
@@ -350,6 +350,7 @@ public class RequestProcessorTest {
 		expect(request.getFunction()).andReturn(FN_GETPRIMITIVE);
 		expect(request.isSessionLoaded()).andReturn(true);
 		expect(request.loadSession()).andReturn(true);
+		expect(request.storeInSession("function", FN_GETPRIMITIVE)).andReturn(true);		
 		// Return request parameter
 		GetPrimitiveObjectClient data = new GetPrimitiveObjectClient();
 		data.offset = "da";
@@ -380,7 +381,8 @@ public class RequestProcessorTest {
 		// Return initiate function
 		expect(request.getFunction()).andReturn(FN_CLOSESESSION);
 		expect(request.isSessionLoaded()).andReturn(true);
-		expect(request.loadSession()).andReturn(true);		
+		expect(request.loadSession()).andReturn(true);	
+		expect(request.storeInSession("function", FN_CLOSESESSION)).andReturn(true);
 		// Expected method calls
 		request.destroySession();
 		request.makeResponse(isA(DataObjectSvr.class));

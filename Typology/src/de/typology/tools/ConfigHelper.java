@@ -1,10 +1,8 @@
 /**
  * Helper to handle constants and config files
  *
- * All values are global static values used in complet
+ * All values are global static values used in the complete project.
  * To use config file instead of standard values call loadConfigFile()
- *
- * Note that PATH variables can be overwritten by calling classes!
  *
  * @author Paul Wagner
  *
