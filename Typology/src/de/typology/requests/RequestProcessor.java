@@ -116,9 +116,6 @@ public class RequestProcessor implements IRequestProcessor {
 			offset = data.offset;
 		}
 
-		// TODO start new threads for logging, we dont need db maintenance with
-		// primitive retrieval
-
 		IRetrieval ret = retrievalFactory.getInstanceOfPrimitiveRetrieval(request);
 		ret.setSentence(null, offset);
 
@@ -211,7 +208,5 @@ public class RequestProcessor implements IRequestProcessor {
 			request.makeErrorResponse(SC_WRN_RET_TIMEOUT, "");
 		}
 	}
-
-
 
 }
